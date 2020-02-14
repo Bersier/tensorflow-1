@@ -1,4 +1,5 @@
 from tensorflow.keras import layers
+from tensorflow.keras import initializers
 from tensorflow.keras.losses import Loss
 from tensorflow.keras.optimizers import Optimizer
 
@@ -7,11 +8,15 @@ from src.imports import tf
 
 
 def new_model(optimizer: Optimizer, loss: Loss) -> tf.keras.Model:
-    model = tf.keras.Sequential([
-        layers.Dense(64, activation='relu', input_shape=(FEATURE_COUNT,)),
-        layers.Dense(64, activation='relu'),
-        layers.Dense(CLASS_COUNT)])
+    inp = layers.Input(shape=(FEATURE_COUNT,))
+    x = inp
 
+    x = dense_relu_layer(x, width=64)
+    x = dense_relu_layer(x, width=64)
+
+    out = layers.Dense(CLASS_COUNT, kernel_initializer=initializers.zeros)(x)
+
+    model = tf.keras.models.Model(inp, out)
     model.compile(
         optimizer=optimizer,
         loss=loss,
@@ -19,3 +24,8 @@ def new_model(optimizer: Optimizer, loss: Loss) -> tf.keras.Model:
     )
 
     return model
+
+
+def dense_relu_layer(inp: tf.Tensor, width: int) -> tf.Tensor:
+    x = layers.Dense(width, kernel_initializer=initializers.he_normal())(inp)
+    return layers.ReLU()(x)
