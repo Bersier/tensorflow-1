@@ -1,4 +1,12 @@
-def train(model, dataset, val_dataset):
-    model.fit(dataset, epochs=10, steps_per_epoch=30,
-              validation_data=val_dataset,
-              validation_steps=3)
+from src.imports import tf
+
+EPOCH_COUNT = 10
+
+
+def train(model: tf.keras.Model, dataset, val_dataset):
+    model.fit(
+        dataset,
+        verbose=1,
+        epochs=EPOCH_COUNT,
+        validation_data=val_dataset
+    )

@@ -1,26 +1,35 @@
+from typing import Tuple
+
 import numpy as np
+from tensorflow.data import Dataset
 
-from src.imports import tf
+TRAINING_SET_SIZE = 2000
+VALIDATION_SET_SIZE = 100
+FEATURE_COUNT = 32
+CLASS_COUNT = 20
+
+BATCH_SIZE = 128
 
 
-def get_datasets():
-    data = np.random.random((1000, 32))
-    labels = random_one_hot_labels((1000, 10))
+def get_datasets() -> Tuple[Dataset, Dataset]:
+    dataset = random_dataset(TRAINING_SET_SIZE).shuffle(
+        buffer_size=TRAINING_SET_SIZE,
+        reshuffle_each_iteration=True
+    ).batch(BATCH_SIZE)
 
-    val_data = np.random.random((100, 32))
-    val_labels = random_one_hot_labels((100, 10))
-
-    dataset = tf.data.Dataset.from_tensor_slices((data, labels)).shuffle(1000)
-    dataset = dataset.batch(32).repeat()
-
-    val_dataset = tf.data.Dataset.from_tensor_slices((val_data, val_labels))
-    val_dataset = val_dataset.batch(32).repeat()
+    val_dataset = random_dataset(VALIDATION_SET_SIZE).batch(BATCH_SIZE)
     return dataset, val_dataset
 
 
-def random_one_hot_labels(shape):
-    n, n_class = shape
-    classes = np.random.randint(0, n_class, n)
-    labels = np.zeros((n, n_class))
-    labels[np.arange(n), classes] = 1
+def random_dataset(size: int) -> Dataset:
+    data = np.random.random((size, FEATURE_COUNT))
+    labels = random_one_hot_labels((size, CLASS_COUNT))
+    return Dataset.from_tensor_slices((data, labels))
+
+
+def random_one_hot_labels(shape: Tuple[int, int]) -> np.ndarray:
+    batch_size, class_count = shape
+    classes = np.random.randint(0, class_count, batch_size)
+    labels = np.zeros((batch_size, class_count))
+    labels[np.arange(batch_size), classes] = 1
     return labels
