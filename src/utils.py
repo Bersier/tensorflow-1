@@ -69,6 +69,9 @@ def approximate(unit_split: Sequence[float], total: int) -> Sequence[int]:
             return x, 0
         return 0, x * math.log(math.ceil(tx) / floor)
 
+    # Use priority queue and start with left_over = total to truly maximize mutual information
+    # Really only need to avoid zeros, so don't need to start at left_over = total
+
     def indexed_score(pair: Tuple[int, float]) -> (float, float, int):
         i, x = pair
         s1, s2 = score(x)
@@ -106,6 +109,12 @@ def to_int_split(unit_split: BinaryUnitSplit, total: int) -> BinaryIntSplit:
 
     first_part = int(unit_split.first * total)
     second_part = int(unit_split.second * total)
+
+    if total == 1:
+        if unit_split.first > unit_split.second:
+            return BinaryIntSplit(1, 0)
+        else:
+            return BinaryIntSplit(0, 1)
 
     if first_part == 0:
         return BinaryIntSplit(1, second_part)
@@ -148,7 +157,7 @@ def test_split():
 
 
 def test_approximate():
-    print(approximate([0.3, 0.2, 0.1, 0.4], 11))
+    print(approximate([0.3, 0.2, 0.1, 0.01, 0.02, 0.03, 0.4 - 0.06], 11))
 
 
 test_approximate()
