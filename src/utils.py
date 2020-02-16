@@ -1,7 +1,11 @@
 import math
 from dataclasses import dataclass
+from typing import Iterable, Sequence, Tuple, TypeVar
 
 from src.imports import tf
+
+T = TypeVar('T')
+S = TypeVar('S')
 
 
 @dataclass(frozen=True)
@@ -45,10 +49,44 @@ class BinaryUnitSplit:
         return BinaryUnitSplit(normalized_first, 1 - normalized_first)
 
 
-def split(binary_unit_split: BinaryUnitSplit, dataset: tf.data.Dataset, size: int)\
+def split(binary_unit_split: BinaryUnitSplit, dataset: tf.data.Dataset, size: int) \
         -> (tf.data.Dataset, tf.data.Dataset):
     first_size = to_int_split(binary_unit_split, size).first
     return dataset.take(first_size), dataset.skip(first_size)
+
+
+def approximate(unit_split: Sequence[float], total: int) -> Sequence[int]:
+    assert sum(unit_split) == 1
+    assert all(map(lambda x: x >= 0, unit_split))
+    assert total >= 0
+
+    def score(x: float) -> (float, float):
+        if x == 0:
+            return 0, 0
+        tx = total * x
+        floor = math.floor(tx)
+        if floor == 0:
+            return x, 0
+        return 0, x * math.log(math.ceil(tx) / floor)
+
+    def indexed_score(pair: Tuple[int, float]) -> (float, float, int):
+        i, x = pair
+        s1, s2 = score(x)
+        return s1, s2, i
+
+    ordered = sorted(map(indexed_score, enumerate(unit_split)), reverse=True)
+    result = list(map(lambda x: int(total * x), unit_split))
+    left_over = total - sum(result)
+    for _, _, index in ordered:
+        if left_over == 0:
+            return result
+        result[index] += 1
+        left_over -= 1
+    return result
+
+
+def flip(iterable: Iterable[Tuple[S, T]]) -> Iterable[Tuple[T, S]]:
+    return map(lambda t: (t[1], t[0]), iterable)
 
 
 def to_int_split(unit_split: BinaryUnitSplit, total: int) -> BinaryIntSplit:
@@ -58,14 +96,6 @@ def to_int_split(unit_split: BinaryUnitSplit, total: int) -> BinaryIntSplit:
     It returns the integer split that, when normalized,
     maximizes the mutual information with the given unit split.
     """
-    # -H(u, i) = u.first*log(i.first / total) + u.second*log(i.second / total)
-    # -H(u, i) = u1 * log(i1 / t) + u2 * log(i2 / t)
-
-    # u1 * log(floor(u1*t) + 0) + u2 * log(floor(u2*t) + 1)
-    # u1 * log(floor(u1*t) + 1) + u2 * log(floor(u2*t) + 0)
-
-    # u1 * log((floor(u1*t) + 1) / floor(u1*t))
-    # u2 * log((floor(u2*t) + 1) / floor(u2*t))
     if total == 0:
         return BinaryIntSplit(0, 0)
 
@@ -108,7 +138,7 @@ def test_to_int_split():
 
 def test_split():
     dataset = tf.data.Dataset.range(3)
-    first, second = split(BinaryUnitSplit.from_second(1/4), dataset, 3)
+    first, second = split(BinaryUnitSplit.from_second(1 / 4), dataset, 3)
     for a in first:
         print(a)
     print()
@@ -117,5 +147,10 @@ def test_split():
     print()
 
 
+def test_approximate():
+    print(approximate([0.3, 0.2, 0.1, 0.4], 11))
+
+
+test_approximate()
 # test_split()
 # test_to_int_split()
