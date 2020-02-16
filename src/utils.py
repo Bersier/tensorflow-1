@@ -56,6 +56,14 @@ def split(binary_unit_split: BinaryUnitSplit, dataset: tf.data.Dataset, size: in
 
 
 def approximate(unit_split: Sequence[float], total: int) -> Sequence[int]:
+    """
+    Convert the given unit split to an integer split of the given total.
+
+    It returns the integer split that, when normalized,
+    minimizes the cross entropy with the given unit split,
+    while also satisfying the constraint that each chunk corresponds to
+    either the floor or the ceiling of the product of its size and the total.
+    """
     assert sum(unit_split) == 1
     assert all(map(lambda x: x >= 0, unit_split))
     assert total >= 0
@@ -68,9 +76,6 @@ def approximate(unit_split: Sequence[float], total: int) -> Sequence[int]:
         if floor == 0:
             return x, 0
         return 0, x * math.log(math.ceil(tx) / floor)
-
-    # Use priority queue and start with left_over = total to truly maximize mutual information
-    # Really only need to avoid zeros, so don't need to start at left_over = total
 
     def indexed_score(pair: Tuple[int, float]) -> (float, float, int):
         i, x = pair
@@ -97,7 +102,7 @@ def to_int_split(unit_split: BinaryUnitSplit, total: int) -> BinaryIntSplit:
     Convert the given unit split to an integer split of the given total.
     
     It returns the integer split that, when normalized,
-    maximizes the mutual information with the given unit split.
+    minimizes the cross entropy with the given unit split.
     """
     if total == 0:
         return BinaryIntSplit(0, 0)
@@ -127,7 +132,7 @@ def to_int_split(unit_split: BinaryUnitSplit, total: int) -> BinaryIntSplit:
     first_score = unit_split.first * math.log((first_part + 1) / first_part)
     second_score = unit_split.second * math.log((second_part + 1) / second_part)
 
-    # This condition is used to maximize the mutual information
+    # This condition is used to minimize the cross entropy
     # between the original split and the returned split.
     if first_score > second_score:
         return BinaryIntSplit(first_part + 1, second_part)
