@@ -12,6 +12,17 @@ CLASS_COUNT = 20
 BATCH_SIZE = 128
 
 
+# https://patrykchrabaszcz.github.io/Imagenet32/
+
+
+def foo():
+    (x_train, y_train), (x_test, y_test) = tf.keras.datasets.cifar10.load_data()
+    # tf.convert_to_tensor
+    print(x_train.shape)
+
+    pass
+
+
 def get_datasets() -> Tuple[tf.data.Dataset, tf.data.Dataset]:
     dataset = random_dataset(TRAINING_SET_SIZE).shuffle(
         buffer_size=TRAINING_SET_SIZE,
