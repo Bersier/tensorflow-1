@@ -104,30 +104,22 @@ def to_int_split(unit_split: BinaryUnitSplit, total: int) -> BinaryIntSplit:
     It returns the integer split that, when normalized,
     minimizes the cross entropy with the given unit split.
     """
-    if total == 0:
-        return BinaryIntSplit(0, 0)
-
-    if unit_split.first == 0:
-        return BinaryIntSplit(0, total)
-    if unit_split.second == 0:
-        return BinaryIntSplit(total, 0)
+    if total <= 1:
+        if unit_split.first > unit_split.second:
+            return BinaryIntSplit(total, 0)
+        else:
+            return BinaryIntSplit(0, total)
 
     first_part = int(unit_split.first * total)
     second_part = int(unit_split.second * total)
 
-    if total == 1:
-        if unit_split.first > unit_split.second:
-            return BinaryIntSplit(1, 0)
-        else:
-            return BinaryIntSplit(0, 1)
+    if first_part + second_part == total:
+        return BinaryIntSplit(first_part, second_part)
 
     if first_part == 0:
         return BinaryIntSplit(1, second_part)
     if second_part == 0:
         return BinaryIntSplit(first_part, 1)
-
-    if first_part + second_part == total:
-        return BinaryIntSplit(first_part, second_part)
 
     first_score = unit_split.first * math.log((first_part + 1) / first_part)
     second_score = unit_split.second * math.log((second_part + 1) / second_part)
