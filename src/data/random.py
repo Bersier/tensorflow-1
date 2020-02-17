@@ -2,8 +2,8 @@ from typing import Tuple
 
 import numpy as np
 
-from src.data.sizeddataset import SizedDataset
 from src.data.utils import dataset_from_numpy
+from src.types.classes import SizedDataset
 
 FEATURE_COUNT = 32
 CLASS_COUNT = 20

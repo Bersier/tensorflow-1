@@ -3,11 +3,10 @@ from typing import Tuple, Union
 import numpy as np
 from numpy import ndarray
 
-from src.data.sizeddataset import SizedDataset, Dataset
 from src.imports import tf
 from src.split.binarysplit import UnitSplit
 from src.split.splitconversion import to_int_split
-from src.types.classes import WholeDataset
+from src.types.classes import WholeDatasetSize, SizedDataset
 
 FRACTION_SET_ASIDE_FOR_VALIDATION = 1 / 4
 BATCH_SIZE = 128
@@ -24,7 +23,7 @@ def dataset_from_numpy(examples: Tuple[ndarray, ndarray]) -> Tuple[SizedDataset,
 
 def from_numpy(numpy_dataset: Tuple[ndarray, ndarray]) -> SizedDataset:
     return SizedDataset(
-        data=Dataset.from_tensor_slices(numpy_dataset),
+        data=tf.data.Dataset.from_tensor_slices(numpy_dataset),
         size=numpy_dataset[0].shape[0]
     )
 
@@ -38,9 +37,9 @@ def normalized(xs: ndarray, sample_axis: int = 0) -> ndarray:
 def ready_for_training(
         dataset: SizedDataset,
         batch_size: int,
-        shuffle_buffer_size: Union[int, WholeDataset] = WholeDataset
+        shuffle_buffer_size: Union[int, WholeDatasetSize] = WholeDatasetSize
 ) -> SizedDataset:
-    if shuffle_buffer_size == WholeDataset:
+    if shuffle_buffer_size == WholeDatasetSize:
         shuffle_buffer_size = dataset.size
     data = dataset.data.shuffle(
         buffer_size=shuffle_buffer_size,
@@ -58,9 +57,9 @@ def ready_for_evaluation(dataset: SizedDataset, batch_size: int) -> SizedDataset
     return SizedDataset(data, dataset.size)
 
 
-def split_dataset(binary_unit_split: UnitSplit, dataset: SizedDataset) -> (SizedDataset, SizedDataset):
+def split_dataset(binary_split: UnitSplit, dataset: SizedDataset) -> (SizedDataset, SizedDataset):
     data = dataset.data.shuffle(buffer_size=dataset.size, reshuffle_each_iteration=False)
-    first_size, second_size = to_int_split(binary_unit_split, dataset.size)
+    first_size, second_size = to_int_split(binary_split, dataset.size)
     first_dataset = SizedDataset(data.take(first_size), first_size)
     second_dataset = SizedDataset(data.skip(first_size), second_size)
     return first_dataset, second_dataset
@@ -68,7 +67,7 @@ def split_dataset(binary_unit_split: UnitSplit, dataset: SizedDataset) -> (Sized
 
 def test_split_dataset():
     dataset_size = 3
-    dataset = SizedDataset(Dataset.range(dataset_size), dataset_size)
+    dataset = SizedDataset(tf.data.Dataset.range(dataset_size), dataset_size)
     first, second = split_dataset(UnitSplit.from_second(1 / 4), dataset)
     for a in first.data:
         print(a)
