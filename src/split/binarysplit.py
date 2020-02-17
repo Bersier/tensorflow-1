@@ -13,6 +13,13 @@ class IntSplit:
     def total(self):
         return self.first + self.second
 
+    def __getitem__(self, index: int) -> float:
+        if index == 0:
+            return self.first
+        if index == 1:
+            return self.second
+        raise IndexError()
+
 
 @dataclass(frozen=True)
 class UnitSplit:
@@ -23,6 +30,13 @@ class UnitSplit:
         assert self.first >= 0
         assert self.second >= 0
         assert self.first + self.second == 1
+
+    def __getitem__(self, index: int) -> float:
+        if index == 0:
+            return self.first
+        if index == 1:
+            return self.second
+        raise IndexError()
 
     @staticmethod
     def total():

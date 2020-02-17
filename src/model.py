@@ -3,7 +3,7 @@ from tensorflow.keras import initializers
 from tensorflow.keras.losses import Loss
 from tensorflow.keras.optimizers import Optimizer
 
-from src.data.data import FEATURE_COUNT, CLASS_COUNT
+from src.data.random import FEATURE_COUNT, CLASS_COUNT
 from src.imports import tf
 
 
