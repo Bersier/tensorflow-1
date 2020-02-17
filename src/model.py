@@ -1,29 +1,26 @@
-from tensorflow.keras import layers
 from tensorflow.keras import initializers
-from tensorflow.keras.losses import Loss
-from tensorflow.keras.optimizers import Optimizer
+from tensorflow.keras import layers
 
-from src.data.random import FEATURE_COUNT, CLASS_COUNT
 from src.imports import tf
+from src.types.classes import ModelSpec
 
 
-def new_model(optimizer: Optimizer, loss: Loss) -> tf.keras.Model:
-    inp = layers.Input(shape=(FEATURE_COUNT,))
+def new_flat_model(model_spec: ModelSpec) -> tf.keras.Model:
+    assert len(model_spec.output_shape) == 1
+
+    inp = layers.Input(shape=model_spec.input_shape)
     x = inp
+    x = layers.Flatten()(x)
 
-    x = dense_relu_layer(x, width=64)
-    x = dense_relu_layer(x, width=64)
+    x = dense_relu_layer(x, width=64)  # 2 * model_spec.input_size())
+    x = dense_relu_layer(x, width=32)  # 2 * model_spec.input_size())
 
-    out = layers.Dense(CLASS_COUNT, kernel_initializer=initializers.zeros)(x)
+    out = layers.Dense(
+        model_spec.output_size(),
+        kernel_initializer=initializers.zeros
+    )(x)
 
-    model = tf.keras.models.Model(inp, out)
-    model.compile(
-        optimizer=optimizer,
-        loss=loss,
-        metrics=[tf.keras.metrics.categorical_accuracy]
-    )
-
-    return model
+    return tf.keras.models.Model(inp, out)
 
 
 def dense_relu_layer(inp: tf.Tensor, width: int) -> tf.Tensor:

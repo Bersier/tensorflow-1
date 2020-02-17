@@ -41,5 +41,4 @@ def approximate(unit_split: Sequence[float], total: int) -> Sequence[int]:
 def test_approximate():
     print(approximate([0.3, 0.2, 0.1, 0.01, 0.02, 0.03, 0.4 - 0.06], 11))
 
-
 # test_approximate()

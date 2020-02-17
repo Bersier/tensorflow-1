@@ -1,42 +1,56 @@
-from typing import Tuple
+from typing import Tuple, Union
 
+import numpy as np
 from numpy import ndarray
 
 from src.data.sizeddataset import SizedDataset, Dataset
 from src.imports import tf
 from src.split.binarysplit import UnitSplit
 from src.split.splitconversion import to_int_split
+from src.types.classes import WholeDataset
 
 FRACTION_SET_ASIDE_FOR_VALIDATION = 1 / 4
 BATCH_SIZE = 128
 
 
-def get_dataset_from_numpy(examples: Tuple[ndarray, ndarray]) -> Tuple[SizedDataset, SizedDataset]:
+def dataset_from_numpy(examples: Tuple[ndarray, ndarray]) -> Tuple[SizedDataset, SizedDataset]:
     train_set, validation_set = split_dataset(
         UnitSplit.from_second(FRACTION_SET_ASIDE_FOR_VALIDATION),
         from_numpy(examples)
     )
 
-    print(train_set)
-    print(validation_set)
-
-    return ready_for_use(train_set, BATCH_SIZE), ready_for_use(validation_set, BATCH_SIZE)
+    return ready_for_training(train_set, BATCH_SIZE), ready_for_evaluation(validation_set, BATCH_SIZE)
 
 
-def from_numpy(numpy_set: Tuple[ndarray, ndarray]) -> SizedDataset:
+def from_numpy(numpy_dataset: Tuple[ndarray, ndarray]) -> SizedDataset:
     return SizedDataset(
-        data=Dataset.from_tensor_slices(numpy_set),
-        size=numpy_set[0].shape[0]
+        data=Dataset.from_tensor_slices(numpy_dataset),
+        size=numpy_dataset[0].shape[0]
     )
 
 
-def ready_for_use(dataset: SizedDataset, batch_size: int, shuffle_buffer_size: int = None) -> SizedDataset:
-    if not shuffle_buffer_size:
+def normalized(xs: ndarray, sample_axis: int = 0) -> ndarray:
+    xs_mean = np.mean(xs, axis=sample_axis)
+    xs_std = np.std(xs, axis=sample_axis)
+    return (xs - xs_mean) / xs_std
+
+
+def ready_for_training(
+        dataset: SizedDataset,
+        batch_size: int,
+        shuffle_buffer_size: Union[int, WholeDataset] = WholeDataset
+) -> SizedDataset:
+    if shuffle_buffer_size == WholeDataset:
         shuffle_buffer_size = dataset.size
     data = dataset.data.shuffle(
         buffer_size=shuffle_buffer_size,
         reshuffle_each_iteration=True
-    ).batch(
+    )
+    return ready_for_evaluation(SizedDataset(data, dataset.size), batch_size)
+
+
+def ready_for_evaluation(dataset: SizedDataset, batch_size: int) -> SizedDataset:
+    data = dataset.data.batch(
         batch_size
     ).prefetch(
         buffer_size=AUTOTUNE
