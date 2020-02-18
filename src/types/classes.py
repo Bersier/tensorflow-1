@@ -4,8 +4,8 @@ from typing import Union, Callable, Tuple, List
 from tensorflow.keras.losses import Loss
 from tensorflow_core import Tensor
 
-from src.imports import tf
-from src.utils import product
+from src.commons.imports import tf
+from src.commons.python import product
 
 SHAPE_TYPE = Union[Tuple[int], Tuple[int, int], Tuple[int, int, int], Tuple[int, int, int, int]]
 

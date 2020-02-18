@@ -3,7 +3,7 @@ from typing import Tuple, Union
 import numpy as np
 from numpy import ndarray
 
-from src.imports import tf
+from src.commons.imports import tf
 from src.split.binarysplit import UnitSplit
 from src.split.splitconversion import to_int_split
 from src.types.classes import WholeDatasetSize, SizedDataset

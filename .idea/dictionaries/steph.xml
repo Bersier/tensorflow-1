@@ -1,14 +1,24 @@
 <component name="ProjectDictionaryState">
-  <dictionary name="steph">
-    <words>
-      <w>autotune</w>
-      <w>cifar</w>
-      <w>cov</w>
-      <w>dataset</w>
-      <w>keras</w>
-      <w>matplotlib</w>
-      <w>pyplot</w>
-      <w>relu</w>
-    </words>
-  </dictionary>
+    <dictionary name="steph">
+        <words>
+            <w>autotune</w>
+            <w>cifar</w>
+            <w>colab</w>
+            <w>convolutional</w>
+            <w>cov</w>
+            <w>covs</w>
+            <w>dataset</w>
+            <w>dtype</w>
+            <w>keras</w>
+            <w>matplotlib</w>
+            <w>max</w>
+            <w>maxs</w>
+            <w>min</w>
+            <w>mins</w>
+            <w>multiplicatively</w>
+            <w>pyplot</w>
+            <w>relu</w>
+            <w>tensorflow</w>
+        </words>
+    </dictionary>
 </component>

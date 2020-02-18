@@ -1,9 +1,9 @@
 import tensorflow_addons as tfa
 from tensorflow.keras.optimizers import Optimizer
 
+from src.commons.imports import tf
 from src.data.utils import split_dataset, ready_for_training, BATCH_SIZE, ready_for_evaluation
-from src.imports import tf
-from src.models.vanilla import new_flat_model
+from src.model.nesting_aware import new_color_model
 from src.split.binarysplit import UnitSplit
 from src.types.classes import LearningProblem, SizedDataset
 
@@ -29,7 +29,7 @@ def train(problem: LearningProblem):
 def model_ready_for_training(problem: LearningProblem) -> tf.keras.Model:
     optimizer: Optimizer = tfa.optimizers.AdamW(amsgrad=True, weight_decay=1e-6)
 
-    model = new_flat_model(problem.io_type)
+    model = new_color_model(problem.io_type)
     model.compile(
         optimizer=optimizer,
         loss=problem.loss_function,

@@ -1,5 +1,5 @@
 from src.data import learningproblems
-from src.training import train
+from src.training.training import train
 
 
 def main():

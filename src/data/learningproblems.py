@@ -1,6 +1,5 @@
+from src.commons.imports import tf
 from src.data.utils import from_numpy, normalized
-from src.imports import tf
-
 from src.types.classes import LearningProblem, IOType
 
 

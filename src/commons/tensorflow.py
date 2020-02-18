@@ -9,6 +9,22 @@ import tensorflow as tf
 NAN = tf.math.log(-1.0)
 
 
+def broadcast_along(x: tf.Tensor, shape, axes):
+    reshape_shape = shape
+    j = 0
+    k = 0
+    for i in range(len(shape)):
+        if i == axes[j]:
+            reshape_shape[i] = 1
+            j += 1
+        else:
+            assert reshape_shape[i] == x.shape[k]
+            k += 1
+
+    x = tf.reshape(x, reshape_shape)
+    return tf.broadcast_to(x, shape)
+
+
 def double_relu(x, feature_axis: int):
     """
     See "Understanding and Improving Convolutional Neural Networks

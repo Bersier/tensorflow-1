@@ -1,6 +1,6 @@
 import tensorflow as tf
 
-from src.utils import reverse_map, to_list
+from src.commons.python import reverse_map, to_list
 
 
 class LabelledTensor:

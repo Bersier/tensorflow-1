@@ -1,7 +1,7 @@
 from tensorflow.keras import initializers
 from tensorflow.keras import layers
 
-from src.imports import tf
+from src.commons.imports import tf
 
 
 def dense_relu_layer(inp: tf.Tensor, width: int) -> tf.Tensor:

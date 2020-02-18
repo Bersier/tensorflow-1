@@ -1,8 +1,8 @@
 from tensorflow.keras import initializers
 from tensorflow.keras.layers import InputSpec
 
-from src.commons import batch_dot_product
-from src.imports import tf
+from src.commons.imports import tf
+from src.commons.tensorflow import batch_dot_product
 
 
 class DoubleDense(tf.keras.layers.Layer):
@@ -14,9 +14,9 @@ class DoubleDense(tf.keras.layers.Layer):
         super(DoubleDense, self).__init__()
 
         self.unit_count = unit_count
-        self.wee_kernel_initializer = initializers.get(wee_kernel_initializer)
-        self.big_kernel_initializer = initializers.get(big_kernel_initializer)
-        self.bias_initializer = initializers.get(bias_initializer)
+        self.wee_kernel_initializer = wee_kernel_initializer
+        self.big_kernel_initializer = big_kernel_initializer
+        self.bias_initializer = bias_initializer
 
         self.supports_masking = False
         self.input_spec = InputSpec(ndim=3)
