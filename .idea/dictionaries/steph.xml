@@ -3,6 +3,7 @@
     <words>
       <w>autotune</w>
       <w>cifar</w>
+      <w>cov</w>
       <w>dataset</w>
       <w>keras</w>
       <w>matplotlib</w>

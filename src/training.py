@@ -3,13 +3,13 @@ from tensorflow.keras.optimizers import Optimizer
 
 from src.data.utils import split_dataset, ready_for_training, BATCH_SIZE, ready_for_evaluation
 from src.imports import tf
-from src.model import new_flat_model
+from src.models.vanilla import new_flat_model
 from src.split.binarysplit import UnitSplit
 from src.types.classes import LearningProblem, SizedDataset
 
 HOLDOUT_FRACTION_FOR_VALIDATION = UnitSplit.from_second(1 / 4)
 
-EPOCH_COUNT = 1
+EPOCH_COUNT = 10
 
 
 def train(problem: LearningProblem):

@@ -2,6 +2,7 @@ from tensorflow.keras import initializers
 from tensorflow.keras import layers
 
 from src.imports import tf
+from src.models.utils import dense_relu_layer
 from src.types.classes import IOType
 
 
@@ -21,8 +22,3 @@ def new_flat_model(io_type: IOType) -> tf.keras.Model:
     )(x)
 
     return tf.keras.models.Model(inp, out)
-
-
-def dense_relu_layer(inp: tf.Tensor, width: int) -> tf.Tensor:
-    x = layers.Dense(width, kernel_initializer=initializers.he_normal())(inp)
-    return layers.ReLU()(x)
