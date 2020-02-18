@@ -122,10 +122,6 @@ def disjunction(collection, predicate):
     return False
 
 
-def todo(*args):
-    raise Exception("Not Implemented. Input:", args)
-
-
 def additively_normalized(vector_batch):
     """
     Shifts the given vectors such that the sum of each is equal to 1.

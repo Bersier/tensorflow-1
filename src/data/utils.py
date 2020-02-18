@@ -6,7 +6,7 @@ from numpy import ndarray
 from src.commons.imports import tf
 from src.split.binarysplit import UnitSplit
 from src.split.splitconversion import to_int_split
-from src.types.classes import WholeDatasetSize, SizedDataset
+from src.type.core import WholeDatasetSize, SizedDataset
 
 FRACTION_SET_ASIDE_FOR_VALIDATION = 1 / 4
 BATCH_SIZE = 128

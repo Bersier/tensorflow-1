@@ -5,10 +5,24 @@ from src.commons.imports import tf
 
 
 class OptionCase(tf.keras.layers.Layer):
+    """
+    Implements a layer that is the equivalent of a case statement for missing features (Options).
+
+    Assumptions:
+      - The input is nested.
+      - The last axis iterates over features of the nested vectors.
+      - All nested vectors are of the same type (stuctural, and distributional).
+      - A nested vector can be present (Some), or absent (None).
+      - The presence of a vector is represented by absence of nans:
+        - If none of the features of a nested vector are nan, then that vector is present.
+        - If any of the the features of a nested vector are nan, then that vector is absent.
+
+    """
+
     def __init__(self,
                  repr_length,
-                 none_initializer,
-                 kernel_initializer,
+                 none_initializer=initializers.zeros,
+                 kernel_initializer=initializers.lecun_normal(),
                  bias_initializer=initializers.zeros):
         super(OptionCase, self).__init__()
 

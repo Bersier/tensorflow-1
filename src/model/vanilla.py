@@ -3,7 +3,7 @@ from tensorflow.keras import layers
 
 from src.commons.imports import tf
 from src.model.utils import dense_relu_layer
-from src.types.classes import IOType
+from src.type.core import IOType
 
 
 def new_flat_model(io_type: IOType) -> tf.keras.Model:

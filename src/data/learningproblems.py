@@ -1,6 +1,6 @@
 from src.commons.imports import tf
 from src.data.utils import from_numpy, normalized
-from src.types.classes import LearningProblem, IOType
+from src.type.core import LearningProblem, IOType
 
 
 def cifar10():

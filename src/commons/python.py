@@ -23,3 +23,7 @@ def to_list(mapping: Iterable[Tuple[S, T]], key_to_index: Mapping[S, int], lengt
 
 def product(numbers: Iterable[Union[int, float]]) -> Union[int, float]:
     return reduce(mul, numbers, 1)
+
+
+def todo(*args):
+    raise Exception("Not Implemented. Input:", args)

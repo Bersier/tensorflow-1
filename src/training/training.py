@@ -5,7 +5,7 @@ from src.commons.imports import tf
 from src.data.utils import split_dataset, ready_for_training, BATCH_SIZE, ready_for_evaluation
 from src.model.nesting_aware import new_color_model
 from src.split.binarysplit import UnitSplit
-from src.types.classes import LearningProblem, SizedDataset
+from src.type.core import LearningProblem, SizedDataset
 
 HOLDOUT_FRACTION_FOR_VALIDATION = UnitSplit.from_second(1 / 4)
 

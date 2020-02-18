@@ -1,6 +1,6 @@
 import abc
 
-from src.types.labelledtensor.axes import Axis
+from src.type.tensor.labelled.axes import Axis
 
 
 class Context(abc.ABC):
