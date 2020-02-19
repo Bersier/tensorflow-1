@@ -1,14 +1,15 @@
 from src.commons.imports import tf
 from src.type.tensor.structured.type import atom, name
-from src.type.tensor.structured.type.core import Type, Sum, Tensor, Tagged, Primitive
+from src.type.tensor.structured.type.core import Type, Sum2, Tensor, Tagged, Numeric
 
 
 def option(of: Type) -> Type:
-    return Sum(union=[of, atom.Static.Absent])
+    return Sum2(of, atom.Static.Absent)
 
 
+# noinspection PyArgumentList
 def scalar(of: tf.dtypes.DType) -> Type:
-    return Primitive(of)
+    return Numeric(of)
 
 
 def vector(of: Type, length: int) -> Type:

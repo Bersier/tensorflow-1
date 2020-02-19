@@ -1,6 +1,6 @@
 import abc
 from dataclasses import dataclass
-from typing import List
+from typing import List, TypeVar, Generic
 
 from src.commons.imports import tf
 from src.type.tensor.structured.type.name import Name
@@ -11,28 +11,60 @@ class Type(abc.ABC):
     pass
 
 
+T = TypeVar('T', covariant=True, bound=Type)
+T1 = TypeVar('T1', covariant=True, bound=Type)
+T2 = TypeVar('T2', covariant=True, bound=Type)
+T3 = TypeVar('T3', covariant=True, bound=Type)
+
+
 @dataclass(frozen=True)
-class Primitive(Type):
+class Primitive(abc.ABC, Type):
     dtype: tf.dtypes.DType
 
 
 @dataclass(frozen=True)
-class Tensor(Type):
-    type: Type
+class Numeric(Primitive):
+    pass
+
+
+@dataclass(frozen=True)
+class Boolean(Primitive):
+    pass
+
+
+@dataclass(frozen=True)
+class Tensor(Generic[T], Type):
+    type: T
     shape: List[int]
 
 
 @dataclass(frozen=True)
-class Sum(Type):
-    union: List[Type]
+class Sum2(Generic[T1, T2], Type):
+    type1: T1
+    type2: T2
 
 
 @dataclass(frozen=True)
-class Product(Type):
-    product: List[Type]
+class Sum3(Generic[T1, T2, T3], Type):
+    type1: T1
+    type2: T2
+    type3: T3
 
 
 @dataclass(frozen=True)
-class Tagged(Type):
-    type: Type
+class Prd2(Generic[T1, T2], Type):
+    type1: T1
+    type2: T2
+
+
+@dataclass(frozen=True)
+class Prd3(Generic[T1, T2, T3], Type):
+    type1: T1
+    type2: T2
+    type3: T3
+
+
+@dataclass(frozen=True)
+class Tagged(Generic[T], Type):
+    type: T
     name: Name
