@@ -27,7 +27,7 @@ def train(problem: LearningProblem):
 
 
 def model_ready_for_training(problem: LearningProblem) -> tf.keras.Model:
-    optimizer: Optimizer = tfa.optimizers.AdamW(amsgrad=True, weight_decay=1e-6)
+    optimizer: Optimizer = adam_optimizer()
 
     model = new_color_model(problem.io_type)
     model.compile(
@@ -37,6 +37,15 @@ def model_ready_for_training(problem: LearningProblem) -> tf.keras.Model:
     )
     model.summary()
     return model
+
+
+def adam_optimizer(learning_rate=1e-3, weight_decay=1e-6, beta_1=0.9):
+    return tfa.optimizers.AdamW(
+        amsgrad=True,
+        learning_rate=learning_rate,
+        weight_decay=weight_decay,
+        beta_1=beta_1
+    )
 
 
 def fit(model: tf.keras.Model, dataset: SizedDataset, validation_dataset: SizedDataset):

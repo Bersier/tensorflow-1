@@ -1,12 +1,21 @@
-import datetime
-import pickle
+from typing import Mapping, Tuple
 
-import tensorflow as tf
+from src.commons.imports import tf
 
-# import tensorflow_probability as tfp
+import tensorflow_probability as tfp
 
+from src.commons.python import fill
 
 NAN = tf.math.log(-1.0)
+
+
+def slice_along(x: tf.Tensor, ranges: Mapping[int, Tuple[int, int]]) -> tf.Tensor:
+    begin = fill(len(x.shape), 0)
+    size = list(x.shape)
+    for axis, _range in ranges:
+        begin[axis] = _range[0]
+        size[axis] = _range[1] - _range[0]
+    return tf.slice(x, begin, size)
 
 
 def broadcast_along(x: tf.Tensor, shape, axes):
@@ -23,14 +32,6 @@ def broadcast_along(x: tf.Tensor, shape, axes):
 
     x = tf.reshape(x, reshape_shape)
     return tf.broadcast_to(x, shape)
-
-
-def double_relu(x, feature_axis: int):
-    """
-    See "Understanding and Improving Convolutional Neural Networks
-    via Concatenated Rectified Linear Units".
-    """
-    return tf.concat([tf.nn.relu(x), tf.nn.relu(-x)], axis=feature_axis)
 
 
 def cast(t):
@@ -50,7 +51,7 @@ def tile_tensor_at_zeroth_dimension(tensor, count):
 
 def sub_tensor(tensor, axis: int, index: int):
     """
-    Get the slice of @tensor at @i along @axis.
+    Get the slice of @tensor at @index along @axis.
     
     :param tensor: the tensor from which to get the slice
     :param axis: the axis orthogonal to the slice
@@ -92,34 +93,6 @@ def split_feet(seq, axis: int) -> tuple:
     body, feet = tf.split(seq, [-1, 1], axis)
     squeezed_feet = tf.squeeze(feet, axis)
     return body, squeezed_feet
-
-
-def reverse_map(mapping):
-    r = dict()
-    for k, v in mapping:
-        r[v] = k
-    return r
-
-
-def to_list(mapping, key_to_index, length):
-    r = [None] * length
-    for k, v in mapping:
-        r[key_to_index[k]] = v
-    return r
-
-
-def conjunction(collection, predicate):
-    for e in collection:
-        if not predicate(e):
-            return False
-    return True
-
-
-def disjunction(collection, predicate):
-    for e in collection:
-        if predicate(e):
-            return True
-    return False
 
 
 def additively_normalized(vector_batch):
@@ -176,38 +149,6 @@ def batch_dot_product(v_1, v_2, axis=-1):
     return tf.reduce_sum(input_tensor=v_1 * v_2, axis=axis)
 
 
-def negation(function):
-    def n(x):
-        return -function(x)
-
-    return n
-
-
-def pickle_to_file(data, filename):
-    outfile = open(filename, 'wb')
-    pickle.dump(data, outfile)
-    outfile.close()
-
-
-def unpickle_file(filename):
-    infile = open(filename, 'rb')
-    new = pickle.load(infile)
-    infile.close()
-    return new
-
-
-def present_time():
-    now = datetime.datetime.now()
-    return now.strftime("%m%d-%H%M%S")
-
-
-def adam_optimizer(learning_rate):
-    return tf.optimizers.Adam(lr=learning_rate, beta_1=0.8, amsgrad=True)
-
-
-cross_entropy = tf.keras.losses.BinaryCrossentropy(from_logits=True)
-
-
 def transposed_mean_across_examples(inputs):
     """
     :param inputs: tensor with shape (example_count, stock_count, feature_count)
@@ -216,20 +157,20 @@ def transposed_mean_across_examples(inputs):
     return tf.transpose(tf.reduce_mean(inputs, axis=[0]), [1, 0])
 
 
-# def transposed_covariance_across_examples(inputs):
-#     """
-#     :param inputs: tensor with shape (example_count, stock_count, feature_count)
-#     :return: covariance.shape = (feature_count, stock_count, stock_count)
-#     """
-#     return tf.transpose(tfp.stats.covariance(inputs, inputs, sample_axis=0, event_axis=1), [2, 0, 1])
-#
-#
-# def transposed_variance_across_examples(inputs):
-#     """
-#     :param inputs: tensor with shape (example_count, stock_count, feature_count)
-#     :return: variance.shape = (feature_count, stock_count)
-#     """
-#     return tf.transpose(tfp.stats.variance(inputs, sample_axis=0), [1, 0])
+def transposed_covariance_across_examples(inputs):
+    """
+    :param inputs: tensor with shape (example_count, stock_count, feature_count)
+    :return: covariance.shape = (feature_count, stock_count, stock_count)
+    """
+    return tf.transpose(tfp.stats.covariance(inputs, inputs, sample_axis=0, event_axis=1), [2, 0, 1])
+
+
+def transposed_variance_across_examples(inputs):
+    """
+    :param inputs: tensor with shape (example_count, stock_count, feature_count)
+    :return: variance.shape = (feature_count, stock_count)
+    """
+    return tf.transpose(tfp.stats.variance(inputs, sample_axis=0), [1, 0])
 
 
 def average_of_absolute_values(tensor):

@@ -2,6 +2,7 @@ from tensorflow.keras import initializers
 from tensorflow.keras.layers import InputSpec
 
 from src.commons.imports import tf
+from src.commons.tensorflow import has_nan
 
 
 class OptionCase(tf.keras.layers.Layer):
@@ -64,8 +65,7 @@ class OptionCase(tf.keras.layers.Layer):
         x += tf.broadcast_to(self.bias, shape=(1,) + x.shape[1:])
         # x += tf.reshape(self.bias, shape=(1,) * last_input_axis + (self.repr_length,))
 
-        nan_mask = tf.math.is_nan(inputs)
-        nan_mask = tf.reduce_any(nan_mask, axis=last_input_axis)
+        nan_mask = has_nan(inputs, axis=last_input_axis)
 
         nan_mask = tf.expand_dims(nan_mask, axis=last_input_axis)
         nan_mask = tf.broadcast_to(nan_mask, x.shape)
