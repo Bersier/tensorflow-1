@@ -36,4 +36,3 @@ class Root(abc.ABC, View[T, T]):
 
     def root(self) -> Root:
         return self
-

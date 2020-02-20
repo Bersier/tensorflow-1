@@ -1,9 +1,8 @@
 from typing import Mapping, Tuple
 
-from src.commons.imports import tf
-
 import tensorflow_probability as tfp
 
+from src.commons.imports import tf
 from src.commons.python import fill
 
 NAN = tf.math.log(-1.0)

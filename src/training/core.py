@@ -9,7 +9,7 @@ from src.type.core import LearningProblem, SizedDataset
 
 HOLDOUT_FRACTION_FOR_VALIDATION = UnitSplit.from_second(1 / 4)
 
-EPOCH_COUNT = 10
+EPOCH_COUNT = 10  # TODO make dataclass for training, and pass it as parameter.
 
 
 def train(problem: LearningProblem):
