@@ -11,17 +11,6 @@ from src.type.tensor.structured.type.core import Tensor
 
 class Structure(core.Structure[Tensor]):
 
-    def __init__(self, tensor: tf.Tensor, axis_range, axis_map, of_type: Tensor):
-        """
-        :param tensor:
-        :param axis_range:
-        :param axis_map: maps logical axes to representation axes
-        :param of_type:
-        """
-        super().__init__(tensor, axis_range.start, of_type)
-        self._axis_range = axis_range
-        self._axis_map = axis_map
-
     # noinspection PyProtectedMember
     def __add__(self, other: Structure):
         assert self._type == other._type
@@ -45,7 +34,11 @@ class Structure(core.Structure[Tensor]):
         tensor = slice_along(self._tensor, ranges)
         tensor = tf.squeeze(tensor, axis=axes_to_squeeze)
         of_type = replace(self._type, shape=tf.shape(tensor))
-        return Structure(tensor, self._start_axis, of_type) # TODO: needs new axis mapping!
+        return Structure(tensor, self._start_axis, of_type)
 
-    def element(self):
-        return new_structure(self._tensor, self._start_axis + )
+    def element_pointer(self):
+        return new_structure(
+            tensor=self._tensor,
+            start_axis=self._start_axis + len(self._type.shape),
+            of_type=self._type.type
+        )

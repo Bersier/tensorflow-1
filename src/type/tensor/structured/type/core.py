@@ -1,6 +1,6 @@
 import abc
 from dataclasses import dataclass
-from typing import List, TypeVar, Generic
+from typing import TypeVar, Generic, Sequence
 
 from src.commons.imports import tf
 from src.type.tensor.structured.type.name import Name
@@ -35,7 +35,7 @@ class Boolean(Primitive):
 @dataclass(frozen=True)
 class Tensor(Generic[T], Type):
     type: T
-    shape: List[int]
+    shape: Sequence[int]
 
 
 @dataclass(frozen=True)
