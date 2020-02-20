@@ -1,10 +1,10 @@
 from src.commons.imports import tf
-from src.type.tensor.structured.type import atom, name
-from src.type.tensor.structured.type.core import Type, Sum2, Tensor, Tagged, Numeric
+from src.type.tensor.structured.type import name
+from src.type.tensor.structured.type.core import Type, Tensor, Tagged, Numeric
 
 
-def option(of: Type) -> Type:
-    return Sum2(of, atom.Static.Absent)
+# def option(of: Type) -> Type:
+#     return Sum2(of, atom.Static.Absent)
 
 
 # noinspection PyArgumentList

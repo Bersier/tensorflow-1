@@ -9,5 +9,5 @@ from src.type.tensor.structured.type.core import Primitive
 T = TypeVar('T', covariant=True, bound=Primitive)
 
 
-class Structure(abc.ABC, core.Structure[T]):
+class View(abc.ABC, core.View[T]):
     pass

@@ -38,30 +38,33 @@ class Tensor(Generic[T], Type):
     shape: Sequence[int]
 
 
-@dataclass(frozen=True)
-class Sum2(Generic[T1, T2], Type):
-    type1: T1
-    type2: T2
-
-
-@dataclass(frozen=True)
-class Sum3(Generic[T1, T2, T3], Type):
-    type1: T1
-    type2: T2
-    type3: T3
-
-
-@dataclass(frozen=True)
-class Prd2(Generic[T1, T2], Type):
-    type1: T1
-    type2: T2
-
-
-@dataclass(frozen=True)
-class Prd3(Generic[T1, T2, T3], Type):
-    type1: T1
-    type2: T2
-    type3: T3
+# TODO Implement Sum and Product.
+#   Sum and product implementation requires more bookkeeping,
+#   general masks for sums, and bound/range masks for products.
+# @dataclass(frozen=True)
+# class Sum2(Generic[T1, T2], Type):
+#     type1: T1
+#     type2: T2
+#
+#
+# @dataclass(frozen=True)
+# class Sum3(Generic[T1, T2, T3], Type):
+#     type1: T1
+#     type2: T2
+#     type3: T3
+#
+#
+# @dataclass(frozen=True)
+# class Prd2(Generic[T1, T2], Type):
+#     type1: T1
+#     type2: T2
+#
+#
+# @dataclass(frozen=True)
+# class Prd3(Generic[T1, T2, T3], Type):
+#     type1: T1
+#     type2: T2
+#     type3: T3
 
 
 @dataclass(frozen=True)
