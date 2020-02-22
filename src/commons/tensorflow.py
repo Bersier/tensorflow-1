@@ -1,4 +1,4 @@
-from typing import Mapping, Tuple
+from typing import Mapping, Tuple, List
 
 import tensorflow_probability as tfp
 
@@ -17,7 +17,7 @@ def slice_along(x: tf.Tensor, ranges: Mapping[int, Tuple[int, int]]) -> tf.Tenso
     return tf.slice(x, begin, size)
 
 
-def broadcast_along(x: tf.Tensor, shape, axes):
+def broadcast_along(x: tf.Tensor, shape: List[int], axes: List[int]) -> tf.Tensor:
     reshape_shape = shape
     j = 0
     k = 0

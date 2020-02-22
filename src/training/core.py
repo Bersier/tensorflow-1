@@ -4,12 +4,14 @@ from tensorflow.keras.optimizers import Optimizer
 from src.commons.imports import tf
 from src.data.utils import split_dataset, ready_for_training, BATCH_SIZE, ready_for_evaluation
 from src.model.nesting_aware import new_color_model
+from src.model.simpleoption import new_option_model
+from src.model.vanilla import new_flat_model
 from src.split.binarysplit import UnitSplit
 from src.type.core import LearningProblem, SizedDataset
 
 HOLDOUT_FRACTION_FOR_VALIDATION = UnitSplit.from_second(1 / 4)
 
-EPOCH_COUNT = 10  # TODO make dataclass for training, and pass it as parameter.
+EPOCH_COUNT = 100  # TODO make dataclass for training, and pass it as parameter.
 
 
 def train(problem: LearningProblem):
@@ -29,7 +31,7 @@ def train(problem: LearningProblem):
 def model_ready_for_training(problem: LearningProblem) -> tf.keras.Model:
     optimizer: Optimizer = adam_optimizer()
 
-    model = new_color_model(problem.io_type)
+    model = new_option_model(problem.io_type)  # TODO specific model should not be hard-coded
     model.compile(
         optimizer=optimizer,
         loss=problem.loss_function,

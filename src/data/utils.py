@@ -9,7 +9,7 @@ from src.split.splitconversion import to_int_split
 from src.type.core import WholeDatasetSize, SizedDataset
 
 FRACTION_SET_ASIDE_FOR_VALIDATION = 1 / 4
-BATCH_SIZE = 128
+BATCH_SIZE = 4
 
 
 def dataset_from_numpy(examples: Tuple[ndarray, ndarray]) -> Tuple[SizedDataset, SizedDataset]:

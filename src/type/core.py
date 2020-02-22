@@ -1,13 +1,14 @@
 from dataclasses import dataclass
-from typing import Union, Callable, Tuple, List
+from typing import Union, Callable, List, Sequence
 
+from tensorflow.keras import losses
 from tensorflow.keras.losses import Loss
 from tensorflow_core import Tensor
 
 from src.commons.imports import tf
 from src.commons.python import product
 
-SHAPE_TYPE = Union[Tuple[int], Tuple[int, int], Tuple[int, int, int], Tuple[int, int, int, int]]
+SHAPE_TYPE = Sequence[int]
 
 
 @dataclass(frozen=True)
@@ -37,6 +38,21 @@ class LearningProblem:
 
     def data(self) -> tf.data.Dataset:
         return self.dataset.data
+
+    @staticmethod
+    def with_default_crossentropy(
+            dataset: SizedDataset,
+            io_type: IOType,
+            metrics=None
+    ):
+        if metrics is None:
+            metrics = []
+        return LearningProblem(
+            dataset=dataset,
+            loss_function=losses.SparseCategoricalCrossentropy(from_logits=True),
+            metrics=[tf.keras.metrics.sparse_categorical_accuracy] + metrics,
+            io_type=io_type
+        )
 
 
 @dataclass(frozen=True)
