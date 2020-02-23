@@ -2,10 +2,12 @@ from dataclasses import dataclass
 from typing import Tuple, List
 
 import numpy as np
-from numpy import ma
+from numpy import ma, ndarray
 
 from src.commons.python import product
 from src.data.utils import from_numpy
+from src.split.binarysplit import UnitSplit
+from src.split.splitconversion import to_int_split
 from src.type.core import SizedDataset
 
 
@@ -32,18 +34,22 @@ def random_dataset(spec: DatasetSpec) -> SizedDataset:
 
 def random_features_with_nans(shape, nan_proportion):
     features = np.random.random(shape)
-    nan_mask = random_mask(shape, nan_proportion)
+    nan_mask = random_split_mask(shape, UnitSplit.from_first(nan_proportion))
     masked_data = ma.array(features, mask=nan_mask)
     return masked_data.filled(np.NAN)
 
 
-def random_mask(shape: List[int], true_proportion) -> np.ndarray:
-    count = product(shape)
-    false_count = int(count * (1 - true_proportion))
-    true_count = count - false_count
+def mixed_up(x: ndarray, y: ndarray, split: UnitSplit) -> ndarray:
+    assert x.shape == y.shape
+    mask = random_split_mask(list(x.shape), split)
+    return np.where(mask, x, y)
+
+
+def random_split_mask(shape: List[int], split: UnitSplit) -> np.ndarray:
+    split = to_int_split(split, product(shape))
     mask = np.concatenate([
-        np.ones(true_count, dtype=bool),
-        np.zeros(false_count, dtype=bool)
+        np.ones(split.first, dtype=bool),
+        np.zeros(split.second, dtype=bool)
     ])
     np.random.shuffle(mask)
     return np.reshape(mask, shape)

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Union, Callable, List, Sequence
+from typing import Union, Callable, List, Sequence, Generic, TypeVar
 
 from tensorflow.keras import losses
 from tensorflow.keras.losses import Loss
@@ -9,6 +9,14 @@ from src.commons.imports import tf
 from src.commons.python import product
 
 SHAPE_TYPE = Sequence[int]
+
+T = TypeVar("T", covariant=True)
+
+
+@dataclass(frozen=True)
+class Weighted(Generic[T]):
+    value: T
+    weight: float
 
 
 @dataclass(frozen=True)

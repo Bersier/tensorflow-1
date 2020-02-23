@@ -12,6 +12,8 @@ def cifar10():
         io_type=IOType([32, 32, 3], [10])
     )
 
+# map over dataset to add nans or zeros
+
 
 def random(spec: DatasetSpec):
     return LearningProblem.with_default_crossentropy(
