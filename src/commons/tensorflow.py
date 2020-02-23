@@ -4,8 +4,13 @@ import tensorflow_probability as tfp
 
 from src.commons.imports import tf
 from src.commons.python import fill
+from src.type.core import Along
 
 NAN = tf.math.log(-1.0)
+
+
+def tensor_dot(x: Along, y: Along) -> tf.Tensor:
+    return tf.tensordot(x.tensor, y.tensor, axes=(x.axes, y.axes))
 
 
 def slice_along(x: tf.Tensor, ranges: Mapping[int, Tuple[int, int]]) -> tf.Tensor:

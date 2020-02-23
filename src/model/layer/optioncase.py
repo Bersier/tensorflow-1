@@ -2,7 +2,8 @@ from tensorflow.keras import initializers
 from tensorflow.keras.layers import InputSpec
 
 from src.commons.imports import tf
-from src.commons.tensorflow import has_nan
+from src.commons.tensorflow import has_nan, tensor_dot
+from src.type.core import Along
 
 
 class OptionCase(tf.keras.layers.Layer):
@@ -56,39 +57,28 @@ class OptionCase(tf.keras.layers.Layer):
 
     # noinspection PyMethodOverriding
     def call(self, inputs):  # TODO test on non-random input, to see whether simpleoption beats vanilla
-        last_input_axis = len(inputs.shape) - 1
+        last_axis = len(inputs.shape) - 1
 
-        nan_mask = has_nan(inputs, axis=last_input_axis)
-        nan_mask = tf.expand_dims(nan_mask, axis=last_input_axis)
+        nan_mask = has_nan(inputs, axis=last_axis)
+        nan_mask = tf.expand_dims(nan_mask, axis=last_axis)
 
+        # Needed, because otherwise, the weights become NaN at some point (tf bug?)...
         inputs = tf.where(nan_mask, tf.zeros_like(inputs), inputs)
 
-        a_axes = [last_input_axis]
-        b_axes = [0]
-        # tf.print("kernel\n", self.kernel)
-        x = tf.tensordot(
-            a=inputs,
-            b=self.kernel,
-            axes=(a_axes, b_axes)
+        # Apply kernel.
+        x = tensor_dot(
+            Along(inputs, [last_axis]),
+            Along(self.kernel, [0])
         )
-        # tf.print("x after tensordot\n", x)
 
         x_shape = tf.shape(x)
+
+        # Apply bias.
         x += tf.broadcast_to(self.bias, shape=x_shape)
 
-        nan_mask = tf.broadcast_to(nan_mask, x_shape)
-
+        output_nan_mask = tf.broadcast_to(nan_mask, x_shape)
         broadcast_none_repr = tf.broadcast_to(self.none_repr, shape=x_shape)
-
-        # tf.print("inputs\n", inputs)
-        # tf.print("nan_mask\n", nan_mask)
-        # tf.print("broadcast_none_repr\n", broadcast_none_repr)
-        # tf.print("x\n", x)
-
-        result = tf.where(nan_mask, broadcast_none_repr, x)
-        # tf.print("result\n", result)
-        result = tf.check_numerics(result, message="asdlfkjds")
-        return result
+        return tf.where(output_nan_mask, broadcast_none_repr, x)
 
     def compute_output_shape(self, input_shape):
         return input_shape[:-1] + (self.repr_length,)

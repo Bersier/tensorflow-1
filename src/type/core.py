@@ -12,6 +12,12 @@ SHAPE_TYPE = Sequence[int]
 
 
 @dataclass(frozen=True)
+class Along:
+    tensor: tf.Tensor
+    axes: List[int]
+
+
+@dataclass(frozen=True)
 class SizedDataset:
     data: tf.data.Dataset
     size: int
