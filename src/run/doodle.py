@@ -1,4 +1,5 @@
 from src.commons.imports import tf
+from src.commons.tensorflow import with_noise, NAN
 
 ones = tf.ones(shape=(2, 3, 4))
 twos = 2 * ones
@@ -13,3 +14,8 @@ print(mask)
 mixed = tf.where(mask, ones, twos)
 
 print(mixed)
+
+noisy_ones = with_noise(noise=NAN, noise_proportion=0.2)(ones)
+print(noisy_ones)
+print(tf.reduce_min(noisy_ones, axis=2))
+print(tf.reduce_max(noisy_ones, axis=2))

@@ -3,9 +3,7 @@ from tensorflow.keras.optimizers import Optimizer
 
 from src.commons.imports import tf
 from src.data.utils import split_dataset, ready_for_training, BATCH_SIZE, ready_for_evaluation
-from src.model.nesting_aware import new_color_model
 from src.model.simpleoption import new_option_model
-from src.model.vanilla import new_flat_model
 from src.split.binarysplit import UnitSplit
 from src.type.core import LearningProblem, SizedDataset
 

@@ -1,4 +1,4 @@
-from typing import Mapping, Tuple, List
+from typing import Mapping, Tuple, List, Callable, Optional, Union
 
 import tensorflow_probability as tfp
 
@@ -6,7 +6,16 @@ from src.commons.imports import tf
 from src.commons.python import fill
 from src.type.core import Along
 
+TENSOR_PAIR = Tuple[tf.Tensor, tf.Tensor]
+TENSOR_FUNCTION = Callable[[tf.Tensor], tf.Tensor]
+AXIS_TYPE = Union[int, Optional[List[int]]]
+
 NAN = tf.math.log(-1.0)
+
+
+def bernoulli(shape: List[int], truth_probability: float = 0.5) -> tf.Tensor:
+    distribution = tfp.distributions.Bernoulli(probs=truth_probability)
+    return tf.cast(distribution.sample(shape), dtype=tf.dtypes.bool)
 
 
 def tensor_dot(x: Along, y: Along) -> tf.Tensor:
@@ -38,22 +47,22 @@ def broadcast_along(x: tf.Tensor, shape: List[int], axes: List[int]) -> tf.Tenso
     return tf.broadcast_to(x, shape)
 
 
-def cast(t):
-    return lambda tensor: tf.cast(tensor, dtype=t)
+def cast(dtype: tf.dtypes.DType) -> TENSOR_FUNCTION:
+    return lambda tensor: tf.cast(tensor, dtype)
 
 
-def check_shape(tensor, shape: tuple):  # TODO allow for None in the shape
+def check_shape(tensor: tf.Tensor, shape: List[int]):  # TODO allow for None in the shape
     if not tensor.shape == shape:
         raise AssertionError(str(tensor.shape) + " != " + str(shape))
 
 
-def tile_tensor_at_zeroth_dimension(tensor, count):
+def tile_tensor_at_zeroth_dimension(tensor: tf.Tensor, count: int) -> tf.Tensor:
     multiples = tf.squeeze(
         tf.one_hot(indices=[0], depth=len(tensor.shape), on_value=count, off_value=1, dtype=tf.int32))
     return tf.tile(tensor, multiples)
 
 
-def sub_tensor(tensor, axis: int, index: int):
+def sub_tensor(tensor: tf.Tensor, axis: int, index: int) -> tf.Tensor:
     """
     Get the slice of @tensor at @index along @axis.
     
@@ -74,7 +83,7 @@ def sub_tensor(tensor, axis: int, index: int):
     return result
 
 
-def split_head(seq, axis: int) -> tuple:
+def split_head(seq: tf.Tensor, axis: int) -> TENSOR_PAIR:
     """
     Split seq at the head.
     :param seq: sequence to be split
@@ -87,7 +96,7 @@ def split_head(seq, axis: int) -> tuple:
     return squeezed_head, tail
 
 
-def split_feet(seq, axis: int) -> tuple:
+def split_feet(seq: tf.Tensor, axis: int) -> TENSOR_PAIR:
     """
     Split seq at the feet.
     :param seq: sequence to be split
@@ -99,7 +108,7 @@ def split_feet(seq, axis: int) -> tuple:
     return body, squeezed_feet
 
 
-def additively_normalized(vector_batch):
+def additively_normalized(vector_batch: tf.Tensor) -> tf.Tensor:
     """
     Shifts the given vectors such that the sum of each is equal to 1.
 
@@ -114,7 +123,7 @@ def additively_normalized(vector_batch):
     return tf.transpose(a=normalized_vector_batch)
 
 
-def multiplicatively_normalized(vector_batch):
+def multiplicatively_normalized(vector_batch: tf.Tensor) -> tf.Tensor:
     """
     Rescales the given vectors such that the sum of each is equal to 1.
 
@@ -127,7 +136,7 @@ def multiplicatively_normalized(vector_batch):
     return tf.transpose(a=normalized_vector_batch)
 
 
-def batch_average(function, axis=-1):
+def batch_average(function: TENSOR_FUNCTION, axis: AXIS_TYPE = -1) -> TENSOR_FUNCTION:
     """
     :param function: to be mapped over a batch and averaged
     :param axis: along which dimension to perform reduce_mean
@@ -140,7 +149,7 @@ def batch_average(function, axis=-1):
     return average
 
 
-def batch_dot_product(v_1, v_2, axis=-1):
+def batch_dot_product(v_1: tf.Tensor, v_2: tf.Tensor, axis: AXIS_TYPE = -1) -> tf.Tensor:
     """
     Each vector in the batch v_1 gets paired with the corresponding vector in v_2.
     The batch axis is axis 0. So the sum is performed along axis 1.
@@ -153,106 +162,36 @@ def batch_dot_product(v_1, v_2, axis=-1):
     return tf.reduce_sum(input_tensor=v_1 * v_2, axis=axis)
 
 
-def transposed_mean_across_examples(inputs):
-    """
-    :param inputs: tensor with shape (example_count, stock_count, feature_count)
-    :return: mean.shape = (feature_count, stock_count)
-    """
-    return tf.transpose(tf.reduce_mean(inputs, axis=[0]), [1, 0])
-
-
-def transposed_covariance_across_examples(inputs):
-    """
-    :param inputs: tensor with shape (example_count, stock_count, feature_count)
-    :return: covariance.shape = (feature_count, stock_count, stock_count)
-    """
-    return tf.transpose(tfp.stats.covariance(inputs, inputs, sample_axis=0, event_axis=1), [2, 0, 1])
-
-
-def transposed_variance_across_examples(inputs):
-    """
-    :param inputs: tensor with shape (example_count, stock_count, feature_count)
-    :return: variance.shape = (feature_count, stock_count)
-    """
-    return tf.transpose(tfp.stats.variance(inputs, sample_axis=0), [1, 0])
-
-
-def average_of_absolute_values(tensor):
-    return tf.reduce_mean(tf.abs(tensor))
-
-
-def average_kld(means, covs):
-    return tf.reduce_mean(kl_divergence_for_multivariate_gaussian(*means, *covs))
-
-
-def kl_divergence_for_multivariate_gaussian(mean0, mean1, cov0, cov1):
-    """
-    :param mean0: shape = (feature_count, stock_count)
-    :param mean1: shape = (feature_count, stock_count)
-    :param cov0: shape = (feature_count, stock_count, stock_count)
-    :param cov1: shape = (feature_count, stock_count, stock_count)
-    :return: shape = (feature_count)
-    """
-    dim = mean1.shape[1]
-    mean_diff = mean1 - mean0
-    inverse_cov1 = tf.linalg.inv(cov1)
-
-    return (tf.linalg.trace(tf.matmul(inverse_cov1, cov0))
-            + batch_dot_product(mean_diff, tf.linalg.matvec(inverse_cov1, mean_diff))
-            - dim
-            + tf.linalg.logdet(cov1) - tf.linalg.logdet(cov0)) / 2
-
-
-# def load_saved_model(model: tf.keras.Model, file_path: str):
-#     # need to build our models first
-#     inputs_seq = tf.ones(shape=(BATCH_SIZE, WINDOW_LENGTH, STOCK_COUNT, INPUT_SIZE))
-#     shared_input_seq = tf.ones(shape=(BATCH_SIZE, WINDOW_LENGTH, SHARED_INPUT_SIZE))
-#     model(inputs_seq, shared_input_seq, BATCH_SIZE)
-#
-#     model.load_weights(file_path)
-#     return model
-#
-#
-# def mean_and_variance_from_sample(sample):
-#     mean, variance = tf.nn.moments(x=sample, axes=[-1])
-#     unbiased_variance_estimator = (BATCH_SIZE / (BATCH_SIZE - 1)) * variance
-#     return mean, unbiased_variance_estimator
-
-
-# TODO check (in colab) if mins and maxs are still broken in latest TF2
-def reduce_min(tensor, axis=None):
+def reduce_min(tensor: tf.Tensor, axis: AXIS_TYPE = None) -> tf.Tensor:
     """Temporary fix while tf.reduce_min is broken"""
     min_of_non_nans = tf.reduce_min(tensor, axis)
     return tf.where(has_nan(tensor, axis), nans_like(min_of_non_nans), min_of_non_nans)
 
 
-def reduce_max(tensor, axis=None):
+def reduce_max(tensor: tf.Tensor, axis: AXIS_TYPE = None) -> tf.Tensor:
     """Temporary fix while tf.reduce_max is broken"""
     max_of_non_nans = tf.reduce_max(tensor, axis)
     return tf.where(has_nan(tensor, axis), nans_like(max_of_non_nans), max_of_non_nans)
 
 
-def minimum(t1, t2):
-    """Temporary fix while tf.minimum is broken"""
-    minimum_of_non_nans = tf.minimum(t1, t2)
-    nan_locations = tf.logical_or(tf.math.is_nan(t1), tf.math.is_nan(t2))
-    return tf.where(nan_locations, nans_like(minimum_of_non_nans), minimum_of_non_nans)
-
-
-def maximum(t1, t2):
-    """Temporary fix while tf.maximum is broken"""
-    maximum_of_non_nans = tf.maximum(t1, t2)
-    nan_locations = tf.logical_or(tf.math.is_nan(t1), tf.math.is_nan(t2))
-    return tf.where(nan_locations, nans_like(maximum_of_non_nans), maximum_of_non_nans)
-
-
-def has_nan(tensor, axis=None):
+def has_nan(tensor: tf.Tensor, axis: AXIS_TYPE = None) -> tf.Tensor:
     return tf.reduce_any(tf.math.is_nan(tensor), axis)
 
 
-def nans_like(tensor):
+def nans_like(tensor: tf.Tensor) -> tf.Tensor:
     return nans(tensor.shape, tensor.dtype)
 
 
-def nans(shape, dtype):
+def nans(shape: List[int], dtype: tf.dtypes.DType) -> tf.Tensor:
     return tf.broadcast_to(tf.cast(NAN, dtype), shape)
+
+
+def with_noise(noise: tf.Tensor, noise_proportion: float) -> TENSOR_FUNCTION:
+    assert tf.rank(noise) == 0
+
+    def closure(t: tf.Tensor) -> tf.Tensor:
+        mask = bernoulli(t.shape, noise_proportion)
+        broadcast_noise = tf.broadcast_to(noise, t.shape)
+        return tf.where(mask, broadcast_noise, t)
+
+    return closure

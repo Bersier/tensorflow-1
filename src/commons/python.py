@@ -2,10 +2,18 @@ import datetime
 import pickle
 from functools import reduce
 from operator import mul
-from typing import Iterable, Tuple, TypeVar, Dict, Mapping, Union, List
+from typing import Iterable, Tuple, TypeVar, Dict, Mapping, Union, List, Callable
 
-T = TypeVar('T')
 S = TypeVar('S')
+T = TypeVar('T')
+U = TypeVar('U')
+
+
+def on_first(f: Callable[[S], T]) -> Callable[[S, U], Tuple[T, U]]:
+    def closure(s: S, u: U) -> Tuple[T, U]:
+        return f(s), u
+
+    return closure
 
 
 def reverse_map(mapping: Iterable[Tuple[S, T]]) -> Dict[T, S]:

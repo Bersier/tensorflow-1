@@ -3,7 +3,7 @@ from typing import Tuple, Union
 import numpy as np
 from numpy import ndarray
 
-from src.commons.imports import tf
+from src.commons.imports import tf, AUTOTUNE
 from src.split.binarysplit import UnitSplit
 from src.split.splitconversion import to_int_split
 from src.type.core import WholeDatasetSize, SizedDataset
@@ -76,6 +76,4 @@ def test_split_dataset():
         print(a)
     print()
 
-
 # test_split_dataset()
-AUTOTUNE = tf.data.experimental.AUTOTUNE
