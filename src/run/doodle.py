@@ -1,5 +1,6 @@
 from src.commons.imports import tf
-from src.commons.tensorflow import with_noise, NAN
+from src.commons.tensorflow.extention import with_noise
+from src.commons.tensorflow.maker import NAN
 
 ones = tf.ones(shape=(2, 3, 4))
 twos = 2 * ones

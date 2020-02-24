@@ -2,7 +2,8 @@ from tensorflow.keras import initializers
 from tensorflow.keras.layers import InputSpec
 
 from src.commons.imports import tf
-from src.commons.tensorflow import has_nan, tensor_dot
+from src.commons.tensorflow.checker import has_nan
+from src.commons.tensorflow.operation import tensor_dot
 from src.type.core import Along
 
 

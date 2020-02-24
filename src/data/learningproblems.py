@@ -2,7 +2,8 @@ from dataclasses import replace
 
 from src.commons.imports import tf, AUTOTUNE
 from src.commons.python import on_first
-from src.commons.tensorflow import NAN, with_noise
+from src.commons.tensorflow.extention import with_noise
+from src.commons.tensorflow.maker import NAN
 from src.data.random import random_dataset, DatasetSpec
 from src.data.utils import from_numpy, normalized
 from src.type.core import LearningProblem, IOType

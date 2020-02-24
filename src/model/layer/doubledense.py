@@ -2,7 +2,7 @@ from tensorflow.keras import initializers
 from tensorflow.keras.layers import InputSpec
 
 from src.commons.imports import tf
-from src.commons.tensorflow import batch_dot_product
+from src.commons.tensorflow.operation import batch_dot_product
 
 
 class DoubleDense(tf.keras.layers.Layer):

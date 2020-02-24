@@ -71,9 +71,9 @@ def pickle_to_file(data, filename):
 
 
 def unpickle_file(filename):
-    infile = open(filename, 'rb')
-    new = pickle.load(infile)
-    infile.close()
+    file = open(filename, 'rb')
+    new = pickle.load(file)
+    file.close()
     return new
 
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import replace
 
 from src.commons.imports import tf
-from src.commons.tensorflow import slice_along
+from src.commons.tensorflow.getter import slice_along
 from src.type.tensor.structured.case import core
 from src.type.tensor.structured.case.core import Root
 from src.type.tensor.structured.case.utils import new_view
