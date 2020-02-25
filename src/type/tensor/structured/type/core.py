@@ -38,6 +38,12 @@ class Tensor(Generic[T], Type):
     shape: Sequence[int]
 
 
+@dataclass(frozen=True)
+class Tagged(Generic[T], Type):
+    type: T
+    name: Name
+
+
 # TODO Implement Sum and Product.
 #   Sum and product implementation requires more bookkeeping,
 #   general masks for sums, and bound/range masks for products.
@@ -65,9 +71,3 @@ class Tensor(Generic[T], Type):
 #     type1: T1
 #     type2: T2
 #     type3: T3
-
-
-@dataclass(frozen=True)
-class Tagged(Generic[T], Type):
-    type: T
-    name: Name

@@ -17,7 +17,7 @@ class View(core.View[Tensor]):
         assert self._view_type == other._root_type
         return View(self._tensor + other._tensor, self._start_axis, self._view_type, self._root_type)
 
-    def __getitem__(self, *args):  # TODO fix
+    def __getitem__(self, *args):
         axes_to_squeeze = []
         ranges = {}
         i = self._start_axis
@@ -34,8 +34,10 @@ class View(core.View[Tensor]):
 
         tensor = slice_along(self._tensor, ranges)
         tensor = tf.squeeze(tensor, axis=axes_to_squeeze)
-        of_type = replace(self._type, shape=tf.shape(tensor))
-        return View(tensor, self._start_axis, of_type)
+        view_type = replace(self._view_type, shape=tf.shape(tensor)[self._start_axis:])
+        root_type = replace(self._root_type, shape=tf.shape(tensor)[self._start_axis:])  # TODO false
+        # TODO replace root and view type by type lens
+        return View(tensor, self._start_axis, root_type, view_type)
 
     def element_view(self):  # TODO fix
         return new_view(
