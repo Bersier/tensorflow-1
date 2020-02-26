@@ -1,9 +1,10 @@
 import tensorflow as tf
 
-from src.commons.python import reverse_map, to_list
-
 
 # See also http://nlp.seas.harvard.edu/NamedTensor (just found this link).
+from src.commons.python.core import reverse_map, to_list
+
+
 class LabelledTensor:
 
     @classmethod

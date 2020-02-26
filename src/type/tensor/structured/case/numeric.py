@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from src.type.tensor.structured.case import primitive
+from src.type.tensor.structured.case.core import Root
 from src.type.tensor.structured.type.core import Numeric
 
 
@@ -10,6 +11,6 @@ from src.type.tensor.structured.type.core import Numeric
 class View(primitive.View[Numeric]):
 
     # noinspection PyProtectedMember
-    def __add__(self, other: View):
-        assert self._type == other._type
-        return View(self._tensor + other._tensor, self._type)
+    def __add__(self, other: Root[Numeric]):
+        assert self._view_type.focus == other.type()
+        return View(self._tensor + other._tensor, self._start_axis, self._view_type)

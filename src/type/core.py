@@ -6,7 +6,7 @@ from tensorflow.keras.losses import Loss
 from tensorflow_core import Tensor
 
 from src.commons.imports import tf
-from src.commons.python import product
+from src.commons.python.core import product
 
 SHAPE_TYPE = Sequence[int]
 

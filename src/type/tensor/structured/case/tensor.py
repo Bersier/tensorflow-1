@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import replace
-
 from src.commons.imports import tf
 from src.commons.tensorflow.getter import slice_along
 from src.type.tensor.structured.case import core
@@ -14,8 +12,8 @@ class View(core.View[Tensor]):
 
     # noinspection PyProtectedMember
     def __add__(self, other: Root):
-        assert self._view_type == other._root_type
-        return View(self._tensor + other._tensor, self._start_axis, self._view_type, self._root_type)
+        assert self._view_type.focus == other.type()
+        return View(self._tensor + other._tensor, self._start_axis, self._view_type)
 
     def __getitem__(self, *args):
         axes_to_squeeze = []
@@ -34,14 +32,12 @@ class View(core.View[Tensor]):
 
         tensor = slice_along(self._tensor, ranges)
         tensor = tf.squeeze(tensor, axis=axes_to_squeeze)
-        view_type = replace(self._view_type, shape=tf.shape(tensor)[self._start_axis:])
-        root_type = replace(self._root_type, shape=tf.shape(tensor)[self._start_axis:])  # TODO false
-        # TODO replace root and view type by type lens
-        return View(tensor, self._start_axis, root_type, view_type)
+        view_type = self._view_type.with_updates(shape=tf.shape(tensor)[self._start_axis:])
+        return View(tensor, self._start_axis, view_type)
 
-    def element_view(self):  # TODO fix
+    def element_view(self):
         return new_view(
             tensor=self._tensor,
-            start_axis=self._start_axis + len(self._type.shape),
-            of_type=self._type.type
+            start_axis=self._start_axis + len(self._view_type.focus.shape),
+            view_type=self._view_type.at('type')
         )
