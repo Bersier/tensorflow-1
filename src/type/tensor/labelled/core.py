@@ -2,14 +2,15 @@ import tensorflow as tf
 
 
 # See also http://nlp.seas.harvard.edu/NamedTensor (just found this link).
-from src.commons.python.core import reverse_map, to_list
+from src.commons.python.core import to_list, index_map
+from src.type.tensor.labelled.axis import Dynamic
 
 
 class LabelledTensor:
 
     @classmethod
     def new(cls, tensor, labels):
-        indices = reverse_map(enumerate(labels))
+        indices = index_map(labels)
         return LabelledTensor(tensor, labels, indices)
 
     def __init__(self, tensor, labels, indices):  # TODO Where to store lengths dictionary?
@@ -28,7 +29,7 @@ class LabelledTensor:
 
     def concat(self, other, self_axis, other_axis, new_label=None):
         if not new_label:
-            new_label = object()
+            new_label = Dynamic()
         aligned_other = self.__align_along_axis(other, self_axis, other_axis)
         self_index = self._indices[self_axis]
         new_labels = self._labels.copy()

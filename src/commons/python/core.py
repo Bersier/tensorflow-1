@@ -2,7 +2,7 @@ import datetime
 import pickle
 from functools import reduce
 from operator import mul
-from typing import Iterable, Tuple, TypeVar, Dict, Mapping, Union, List, Callable, Any
+from typing import Iterable, Tuple, TypeVar, Dict, Mapping, Union, List, Callable, Any, Sequence
 
 S = TypeVar('S')
 T = TypeVar('T')
@@ -14,6 +14,10 @@ def on_first(f: Callable[[S], T]) -> Callable[[S, U], Tuple[T, U]]:
         return f(s), u
 
     return closure
+
+
+def index_map(sequence: Sequence[T]) -> Dict[T, int]:
+    return reverse_map(enumerate(sequence))
 
 
 def reverse_map(mapping: Iterable[Tuple[S, T]]) -> Dict[T, S]:

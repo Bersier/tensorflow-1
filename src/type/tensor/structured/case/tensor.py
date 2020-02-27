@@ -13,7 +13,10 @@ class View(core.View[Tensor]):
     # noinspection PyProtectedMember
     def __add__(self, other: Root):
         assert self._view_type.focus == other.type()
-        return View(self._tensor + other._tensor, self._start_axis, self._view_type)
+        sum_tensor = self._tensor + other._tensor
+        if self._mask:
+            sum_tensor = tf.where(self._mask, sum_tensor, self._tensor)
+        return View(sum_tensor, self._start_axis, self._mask, self._view_type)
 
     def __getitem__(self, *args):
         axes_to_squeeze = []
@@ -32,8 +35,12 @@ class View(core.View[Tensor]):
 
         tensor = slice_along(self._tensor, ranges)
         tensor = tf.squeeze(tensor, axis=axes_to_squeeze)
+        mask = self._mask
+        if mask:
+            mask = slice_along(mask, ranges)
+            mask = tf.squeeze(mask, axis=axes_to_squeeze)
         view_type = self._view_type.with_updates(shape=tf.shape(tensor)[self._start_axis:])
-        return View(tensor, self._start_axis, view_type)
+        return View(tensor, self._start_axis, mask, view_type)
 
     def element_view(self):
         return new_view(
