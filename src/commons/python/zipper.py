@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from inspect import ismethod
 from typing import Generic, TypeVar, Mapping, Any, cast
 
+from src.commons.python.core import new_instance
 from src.commons.python.type import List, Cons
 
 T = TypeVar('T', covariant=True)
@@ -19,39 +20,47 @@ class Node:
 @dataclass(frozen=True)
 class Zipper(Generic[T]):
     path: List[Node]
-    position: T
+    focus: T
 
     def __getattr__(self, name):
-        attribute = getattr(self.position, name)
+        attribute = getattr(self.focus, name)
         if ismethod(attribute):
             return attribute
         else:
-            return self.descend(name)
+            return self.at(name)
 
-    def descend(self, name: str) -> Zipper:
-        fields = dict(vars(self.position))
-        del fields[name]
-        node = Node(type(self.position), name, fields)
+    def with_updates(self, **changes) -> Zipper[T]:
         return Zipper(
-            path=Cons(node, self.path),
-            position=getattr(self.position, name)
+            path=self.path,
+            focus=replace(self.focus, **changes)
         )
 
-    def ascend(self) -> Zipper:
+    def at(self, name: str) -> Zipper:
+        fields = dict(vars(self.focus))
+        del fields[name]
+        node = Node(type(self.focus), name, fields)
+        return Zipper(
+            path=Cons(node, self.path),
+            focus=getattr(self.focus, name)
+        )
+
+    def up(self) -> Zipper:
         path = cast(Cons[Node], self.path)
         node = path.head
         fields = dict(node.other_fields)
-        fields[node.attribute_name] = self.position
+        fields[node.attribute_name] = self.focus
         position = new_instance(node.of_type, fields)
         return Zipper(
             path=path.tail,
-            position=position
+            focus=position
         )
 
+    def root(self) -> Any:
+        if self.path == List.empty():
+            return self.focus
+        else:
+            return self.up().root()
 
-def new_instance(of: type, with_fields: Mapping[str, Any]):
-    # noinspection PyArgumentList
-    obj = of.__new__(of)
-    for name, value in with_fields.items():
-        setattr(obj, name, value)
-    return obj
+
+def zipper_of(value: T) -> Zipper[T]:
+    return Zipper(List.empty(), value)

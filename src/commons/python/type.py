@@ -1,17 +1,23 @@
+from __future__ import annotations
+
 import abc
 from dataclasses import dataclass
-from typing import Generic
+from typing import Generic, Any
 
 from src.commons.python.zipper import T
 
 
 @dataclass(frozen=True)
 class List(abc.ABC, Generic[T]):
-    pass
+
+    @staticmethod
+    def empty() -> List[Any]:
+        # noinspection PyTypeChecker
+        return Empty
 
 
 @dataclass(frozen=True)
-class Empty(List):
+class Empty(List[Any]):
     pass
 
 

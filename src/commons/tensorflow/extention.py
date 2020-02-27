@@ -1,4 +1,4 @@
-from src.commons.tensorflow.utils import TENSOR_FUNCTION
+from src.commons.tensorflow.typealias import TENSOR_FUNCTION
 
 from src.commons.imports import tf
 from src.commons.tensorflow.maker import bernoulli

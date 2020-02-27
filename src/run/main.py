@@ -1,6 +1,7 @@
+import src.data.problems
 from src.data import learningproblems
 from src.data import random
-from src.data.learningproblems import cifar10, with_nans
+from src.data.problems import cifar10, with_nans
 from src.training.core import train
 
 
@@ -9,7 +10,7 @@ def main():
 
 
 def train_with_random_data():
-    train(learningproblems.random(random.DatasetSpec(
+    train(src.data.problems.random(random.DatasetSpec(
         size=250,
         feature_count=2,
         class_count=20,

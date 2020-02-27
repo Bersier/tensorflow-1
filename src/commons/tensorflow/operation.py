@@ -1,4 +1,4 @@
-from src.commons.tensorflow.utils import AXIS_TYPE, TENSOR_FUNCTION
+from src.commons.tensorflow.typealias import AXIS_TYPE, TENSOR_FUNCTION
 
 from src.commons.imports import tf
 from src.commons.tensorflow.checker import has_nan

@@ -4,8 +4,8 @@ from typing import Tuple, List
 import numpy as np
 from numpy import ma, ndarray
 
-from src.commons.python import product
-from src.data.utils import from_numpy
+from src.commons.python.core import product
+from src.data.core import from_numpy
 from src.split.binarysplit import UnitSplit
 from src.split.splitconversion import to_int_split
 from src.type.core import SizedDataset

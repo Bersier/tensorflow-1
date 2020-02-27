@@ -1,11 +1,11 @@
 from dataclasses import replace
 
-from src.commons.imports import tf, AUTOTUNE
-from src.commons.python import on_first
+from src.commons.imports import AUTOTUNE, tf
+from src.commons.python.core import on_first
 from src.commons.tensorflow.extention import with_noise
 from src.commons.tensorflow.maker import NAN
-from src.data.random import random_dataset, DatasetSpec
-from src.data.utils import from_numpy, normalized
+from src.data.random import DatasetSpec, random_dataset
+from src.data.core import from_numpy, normalized
 from src.type.core import LearningProblem, IOType
 
 
@@ -35,5 +35,6 @@ def with_nans(problem: LearningProblem, nan_proportion: float = 0.5) -> Learning
             data=problem.data().map(mapping, num_parallel_calls=AUTOTUNE)
         )
     )
+
 
 # https://patrykchrabaszcz.github.io/Imagenet32/

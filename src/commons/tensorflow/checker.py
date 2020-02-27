@@ -1,6 +1,6 @@
 from typing import List
 
-from src.commons.tensorflow.utils import AXIS_TYPE
+from src.commons.tensorflow.typealias import AXIS_TYPE
 
 from src.commons.imports import tf
 

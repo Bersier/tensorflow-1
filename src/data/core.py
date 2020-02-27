@@ -3,10 +3,10 @@ from typing import Tuple, Union
 import numpy as np
 from numpy import ndarray
 
-from src.commons.imports import tf, AUTOTUNE
+from src.commons.imports import AUTOTUNE, tf
 from src.split.binarysplit import UnitSplit
 from src.split.splitconversion import to_int_split
-from src.type.core import WholeDatasetSize, SizedDataset
+from src.type.core import SizedDataset, WholeDatasetSize
 
 FRACTION_SET_ASIDE_FOR_VALIDATION = 1 / 4
 BATCH_SIZE = 4
@@ -63,17 +63,3 @@ def split_dataset(binary_split: UnitSplit, dataset: SizedDataset) -> (SizedDatas
     first_dataset = SizedDataset(data.take(first_size), first_size)
     second_dataset = SizedDataset(data.skip(first_size), second_size)
     return first_dataset, second_dataset
-
-
-def test_split_dataset():
-    dataset_size = 3
-    dataset = SizedDataset(tf.data.Dataset.range(dataset_size), dataset_size)
-    first, second = split_dataset(UnitSplit.from_second(1 / 4), dataset)
-    for a in first.data:
-        print(a)
-    print()
-    for a in second.data:
-        print(a)
-    print()
-
-# test_split_dataset()

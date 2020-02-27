@@ -2,7 +2,7 @@ import datetime
 import pickle
 from functools import reduce
 from operator import mul
-from typing import Iterable, Tuple, TypeVar, Dict, Mapping, Union, List, Callable
+from typing import Iterable, Tuple, TypeVar, Dict, Mapping, Union, List, Callable, Any
 
 S = TypeVar('S')
 T = TypeVar('T')
@@ -80,3 +80,12 @@ def unpickle_file(filename):
 def present_time():
     now = datetime.datetime.now()
     return now.strftime("%m%d-%H%M%S")
+
+
+def new_instance(of: type, with_fields: Mapping[str, Any]):
+    """Warning! Unsafe."""
+    # noinspection PyArgumentList
+    obj = of.__new__(of)
+    for name, value in with_fields.items():
+        setattr(obj, name, value)
+    return obj

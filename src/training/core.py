@@ -2,7 +2,7 @@ import tensorflow_addons as tfa
 from tensorflow.keras.optimizers import Optimizer
 
 from src.commons.imports import tf
-from src.data.utils import split_dataset, ready_for_training, BATCH_SIZE, ready_for_evaluation
+from src.data.core import BATCH_SIZE, ready_for_training, ready_for_evaluation, split_dataset
 from src.model.simpleoption import new_option_model
 from src.split.binarysplit import UnitSplit
 from src.type.core import LearningProblem, SizedDataset
