@@ -6,9 +6,8 @@ class Name(abc.ABC):
     pass
 
 
-class Dynamic(abc.ABC, Name):
-    def __init__(self):
-        pass
+class Dynamic(Name):
+    pass
 
 
 class Static(Enum, Name):

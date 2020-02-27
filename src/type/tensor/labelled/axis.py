@@ -6,9 +6,8 @@ class Axis(abc.ABC):
     pass
 
 
-class Dynamic(abc.ABC, Axis):
-    def __init__(self):
-        pass
+class Dynamic(Axis):
+    pass
 
 
 class Static(Enum, Axis):

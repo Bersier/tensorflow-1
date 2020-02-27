@@ -5,6 +5,9 @@ from src.commons.tensorflow.maker import NAN
 ones = tf.ones(shape=(2, 3, 4))
 twos = 2 * ones
 
+z = tf.bitwise.bitwise_and(tf.cast(ones, dtype=tf.dtypes.int32), tf.cast(twos, dtype=tf.dtypes.int32))
+print("z:", z)
+
 print(ones[0, 1:2, 2:])
 
 mask = tf.constant(((True, False, False), (False, True, False)), dtype=tf.dtypes.bool)

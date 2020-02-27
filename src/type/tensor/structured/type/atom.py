@@ -8,9 +8,8 @@ class Atom(abc.ABC, Type):
     pass
 
 
-class Dynamic(abc.ABC, Atom):
-    def __init__(self):
-        pass
+class Dynamic(Atom):
+    pass
 
 
 class Static(Enum, Atom):

@@ -5,7 +5,7 @@ from inspect import ismethod
 from typing import Generic, TypeVar, Mapping, Any, cast
 
 from src.commons.python.core import new_instance
-from src.commons.python.type import List, Cons
+from src.commons.python.list import List, Cons
 
 T = TypeVar('T', covariant=True)
 

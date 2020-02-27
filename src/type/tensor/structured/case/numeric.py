@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from src.type.tensor.structured.case import primitive
 from src.type.tensor.structured.case.core import Root
-from src.type.tensor.structured.type.core import Numeric
+from src.type.tensor.structured.type.numeric import Numeric
 
 
 # TODO should be a type class, ideally, so that it can be applied to e.g. Tensor...

@@ -1,6 +1,7 @@
+import src.commons.python.name
 from src.commons.imports import tf
-from src.type.tensor.structured.type import name
-from src.type.tensor.structured.type.core import Type, Tensor, Tagged, Numeric
+from src.type.tensor.structured.type.core import Type, Tensor
+from src.type.tensor.structured.type.numeric import Numeric
 
 
 # def option(of: Type) -> Type:
@@ -13,8 +14,8 @@ def scalar(of: tf.dtypes.DType) -> Type:
 
 
 def vector(of: Type, length: int) -> Type:
-    return Tagged(Tensor(type=of, shape=[length]), name=name.Static.Vector)
+    return Tagged(Tensor(type=of, shape=[length]), name=src.commons.python.name.Static.Vector)
 
 
 def matrix(of: Type, row_count: int, column_count: int) -> Type:
-    return Tagged(Tensor(type=of, shape=[row_count, column_count]), name=name.Static.Matrix)
+    return Tagged(Tensor(type=of, shape=[row_count, column_count]), name=src.commons.python.name.Static.Matrix)
