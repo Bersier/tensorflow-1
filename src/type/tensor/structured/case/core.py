@@ -5,9 +5,9 @@ from typing import Generic, Optional, TypeVar, Any
 
 from src.commons.imports import tf
 from src.commons.python.core import todo
-from src.type.tensor.structured.case.utils import Root
 from src.commons.python.list import List
 from src.commons.python.zipper import Zipper
+from src.type.tensor.structured.case.utils import Root
 from src.type.tensor.structured.type.core import T, Type
 
 IS_ROOT = TypeVar('IS_ROOT', covariant=True, bound=Root)

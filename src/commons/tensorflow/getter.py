@@ -1,9 +1,8 @@
 from typing import Mapping, Tuple, List
 
+from src.commons.imports import tf
 from src.commons.python.core import fill
 from src.commons.tensorflow.typealias import TENSOR_PAIR
-
-from src.commons.imports import tf
 
 
 def slice_along(x: tf.Tensor, ranges: Mapping[int, Tuple[int, int]]) -> tf.Tensor:

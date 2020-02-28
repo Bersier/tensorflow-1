@@ -1,7 +1,6 @@
-from src.commons.tensorflow.typealias import TENSOR_FUNCTION
-
 from src.commons.imports import tf
 from src.commons.tensorflow.maker import bernoulli
+from src.commons.tensorflow.typealias import TENSOR_FUNCTION
 
 
 def tile_tensor_at_zeroth_dimension(tensor: tf.Tensor, count: int) -> tf.Tensor:

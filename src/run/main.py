@@ -1,5 +1,4 @@
 import src.data.problems
-from src.data import learningproblems
 from src.data import random
 from src.data.problems import cifar10, with_nans
 from src.training.core import train

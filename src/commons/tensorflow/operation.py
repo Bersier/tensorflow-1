@@ -1,8 +1,7 @@
-from src.commons.tensorflow.typealias import AXIS_TYPE, TENSOR_FUNCTION
-
 from src.commons.imports import tf
 from src.commons.tensorflow.checker import has_nan
 from src.commons.tensorflow.maker import nans_like
+from src.commons.tensorflow.typealias import AXIS_TYPE, TENSOR_FUNCTION
 from src.type.core import Along
 
 

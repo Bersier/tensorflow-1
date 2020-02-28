@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from src.commons.imports import tf
-from src.type.tensor.structured.case.utils import Root
 from src.type.tensor.structured.case import core
 from src.type.tensor.structured.case.core import IS_ROOT
+from src.type.tensor.structured.case.utils import Root
 from src.type.tensor.structured.type.numeric import N
 
 

@@ -1,6 +1,5 @@
 import tensorflow as tf
 
-
 # See also http://nlp.seas.harvard.edu/NamedTensor (just found this link).
 from src.commons.python.core import to_list, index_map
 from src.type.tensor.labelled.axis import Dynamic

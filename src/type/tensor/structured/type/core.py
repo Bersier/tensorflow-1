@@ -5,24 +5,12 @@ from dataclasses import dataclass
 from typing import TypeVar, Generic, Sequence
 
 from src.commons.imports import tf
-from src.type.tensor.structured.case import tensor
-from src.type.tensor.structured.case.utils import Root
 from src.commons.python.name import Name
 from src.commons.python.record import NamedPair, NamedTriple
-from src.type.tensor.structured.case.core import View
 
 
 @dataclass(frozen=True)
 class Type(abc.ABC):
-
-    @staticmethod
-    @abc.abstractmethod
-    def _corresponding_view() -> type(View):
-        pass
-
-    def new_root(self: SELF_T, t: tf.Tensor) -> View[SELF_T, Root.Yes]:
-        # noinspection PyProtectedMember
-        return self._corresponding_view()._root(t, self)
 
     def tensor(self, shape: Sequence[int]) -> Tensor:
         return Tensor(self, shape)
@@ -48,10 +36,6 @@ class Primitive(abc.ABC, Type):
 class Tensor(Generic[T], Type):
     type: T
     shape: Sequence[int]
-
-    @staticmethod
-    def _corresponding_view() -> type(tensor.View):
-        return tensor.View
 
 
 @dataclass(frozen=True)

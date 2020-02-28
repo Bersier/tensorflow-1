@@ -5,7 +5,6 @@ from dataclasses import dataclass
 from typing import TypeVar, Sequence
 
 from src.commons.python.name import Name
-from src.type.tensor.structured.case import numeric
 from src.type.tensor.structured.type import core
 from src.type.tensor.structured.type.core import Type
 
@@ -36,10 +35,7 @@ class Primitive(core.Primitive, Numeric):
 
 @dataclass(frozen=True)
 class Tensor(core.Tensor[N], Numeric):
-
-    @staticmethod
-    def _corresponding_view() -> type(numeric.Tensor):
-        return numeric.Tensor
+    pass
 
 
 @dataclass(frozen=True)

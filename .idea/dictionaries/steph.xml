@@ -8,6 +8,7 @@
       <w>convolutional</w>
       <w>cov</w>
       <w>covs</w>
+      <w>crossentropy</w>
       <w>dataset</w>
       <w>dtype</w>
       <w>keras</w>
@@ -17,6 +18,7 @@
       <w>min</w>
       <w>mins</w>
       <w>multiplicatively</w>
+      <w>numeric</w>
       <w>pyplot</w>
       <w>relu</w>
       <w>stuctural</w>
