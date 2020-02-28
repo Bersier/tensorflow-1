@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 from src.commons.imports import tf
+from src.type.tensor.structured.case.utils import Root
 from src.type.tensor.structured.case import core
-from src.type.tensor.structured.case.core import Root
+from src.type.tensor.structured.case.core import IS_ROOT
 from src.type.tensor.structured.type.numeric import N
 
 
-class View(core.View[N]):
+class View(core.View[N, IS_ROOT]):
 
     # noinspection PyProtectedMember
-    def __add__(self, other: Root[N]):
+    def __add__(self, other: View[N, Root.Yes]):
         assert self.type() == other.type()
         sum_tensor = self._tensor + other._tensor
         if self._mask:
