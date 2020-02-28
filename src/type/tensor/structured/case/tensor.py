@@ -3,20 +3,11 @@ from __future__ import annotations
 from src.commons.imports import tf
 from src.commons.tensorflow.getter import slice_along
 from src.type.tensor.structured.case import core
-from src.type.tensor.structured.case.core import Root
 from src.type.tensor.structured.case.utils import new_view
 from src.type.tensor.structured.type.core import Tensor
 
 
 class View(core.View[Tensor]):
-
-    # noinspection PyProtectedMember
-    def __add__(self, other: Root):
-        assert self._view_type.focus == other.type()
-        sum_tensor = self._tensor + other._tensor
-        if self._mask:
-            sum_tensor = tf.where(self._mask, sum_tensor, self._tensor)
-        return View(sum_tensor, self._start_axis, self._mask, self._view_type)
 
     def __getitem__(self, *args):
         axes_to_squeeze = []
@@ -46,5 +37,5 @@ class View(core.View[Tensor]):
         return new_view(
             tensor=self._tensor,
             start_axis=self._start_axis + len(self._view_type.focus.shape),
-            view_type=self._view_type.at('type')
+            view_type=self._view_type.type
         )

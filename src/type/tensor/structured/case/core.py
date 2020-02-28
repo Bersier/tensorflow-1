@@ -1,20 +1,23 @@
 from __future__ import annotations
 
 import abc
-from typing import Generic, Optional
+from typing import Generic, Optional, TypeVar
 
 from src.commons.imports import tf
 from src.commons.python.core import todo
+from src.commons.python.finitetype import Two
 from src.commons.python.zipper import Zipper, zipper_of
 from src.type.tensor.structured.case.utils import new_root
 from src.type.tensor.structured.type.core import T
+
+IS_ROOT = TypeVar('IS_ROOT', covariant=True, bound=Two)
 
 
 def is_valid_type(tensor: tf.Tensor, start_axis: int, of_type: T) -> bool:
     return todo(tensor, start_axis, of_type)
 
 
-class View(abc.ABC, Generic[T]):
+class View(abc.ABC, Generic[T, IS_ROOT]):
     def __init__(self, tensor: tf.Tensor, start_axis: int, mask: Optional[tf.Tensor], view_type: Zipper[T]):
         assert is_valid_type(tensor, start_axis, view_type.focus)
         self._tensor = tensor
@@ -24,6 +27,9 @@ class View(abc.ABC, Generic[T]):
 
     def root(self) -> Root:
         return new_root(self._tensor, self._view_type.root())
+
+    def type(self):
+        return self._view_type.focus
 
 
 class Root(abc.ABC, View[T]):
@@ -36,6 +42,3 @@ class Root(abc.ABC, View[T]):
 
     def root(self) -> Root:
         return self
-
-    def type(self):
-        return self._view_type.focus

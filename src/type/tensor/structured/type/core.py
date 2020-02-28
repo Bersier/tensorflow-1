@@ -7,10 +7,17 @@ from typing import TypeVar, Generic, Sequence
 from src.commons.imports import tf
 from src.commons.python.name import Name
 from src.commons.python.record import NamedPair, NamedTriple
+from src.commons.python.zipper import Zipper
+from src.type.tensor.structured.case import tensor
+from src.type.tensor.structured.case.core import Root
 
 
 @dataclass(frozen=True)
 class Type(abc.ABC):
+
+    @abc.abstractmethod
+    def new_root(self, tensor: tf.Tensor) -> Root:
+        pass
 
     def tensor(self, shape: Sequence[int]) -> Tensor:
         return Tensor(self, shape)
@@ -34,6 +41,9 @@ class Primitive(abc.ABC, Type):
 class Tensor(Generic[T], Type):
     type: T
     shape: Sequence[int]
+
+    def new_root(self, t: tf.Tensor) -> Root[Tensor]:
+        return tensor.View(t, 0, None, Zipper(self))
 
 
 @dataclass(frozen=True)
