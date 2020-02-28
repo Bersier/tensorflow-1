@@ -1,15 +1,25 @@
+from __future__ import annotations
+
 import abc
 from dataclasses import dataclass
-from typing import TypeVar
+from typing import TypeVar, Sequence
 
+from src.commons.python.name import Name
 from src.type.tensor.structured.type import core
-from src.type.tensor.structured.type.core import Type, Primitive, Tensor
+from src.type.tensor.structured.type.core import Type
 
 
 @dataclass(frozen=True)
 class Boolean(abc.ABC, Type):
     """This would be a type class if Python supported them."""
-    pass
+
+    # noinspection PyArgumentList
+    def tensor(self, shape: Sequence[int]) -> Tensor:
+        return Tensor(self, shape)
+
+    # noinspection PyArgumentList
+    def tagged(self, tag: Name) -> Tagged:
+        return Tagged(tag, self)
 
 
 B = TypeVar('B', covariant=True, bound=Boolean)
@@ -19,12 +29,17 @@ B3 = TypeVar('B3', covariant=True, bound=Boolean)
 
 
 @dataclass(frozen=True)
-class Primitive(Primitive, Boolean):
+class Primitive(core.Primitive, Boolean):
     pass
 
 
 @dataclass(frozen=True)
-class Tensor(Tensor[B], Boolean):
+class Tensor(core.Tensor[B], Boolean):
+    pass
+
+
+@dataclass(frozen=True)
+class Tagged(core.Tagged[B], Boolean):
     pass
 
 

@@ -14,3 +14,4 @@ class Dynamic(Atom):
 
 class Static(Enum, Atom):
     Absent = auto()
+    Present = auto()

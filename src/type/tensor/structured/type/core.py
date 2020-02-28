@@ -1,14 +1,22 @@
+from __future__ import annotations
+
 import abc
 from dataclasses import dataclass
 from typing import TypeVar, Generic, Sequence
 
 from src.commons.imports import tf
+from src.commons.python.name import Name
 from src.commons.python.record import NamedPair, NamedTriple
 
 
 @dataclass(frozen=True)
 class Type(abc.ABC):
-    pass
+
+    def tensor(self, shape: Sequence[int]) -> Tensor:
+        return Tensor(self, shape)
+
+    def tagged(self, tag: Name) -> Tagged:
+        return Tagged(tag, self)
 
 
 T = TypeVar('T', covariant=True, bound=Type)
@@ -26,6 +34,12 @@ class Primitive(abc.ABC, Type):
 class Tensor(Generic[T], Type):
     type: T
     shape: Sequence[int]
+
+
+@dataclass(frozen=True)
+class Tagged(Generic[T], Type):
+    tag: Name
+    type: T
 
 
 @dataclass(frozen=True)
