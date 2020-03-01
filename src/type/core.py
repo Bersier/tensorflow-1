@@ -3,6 +3,7 @@ from typing import Union, Callable, List, Sequence, Generic, TypeVar
 
 from tensorflow.keras import losses
 from tensorflow.keras.losses import Loss
+from tensorflow.keras.optimizers import Optimizer
 from tensorflow_core import Tensor
 
 from src.commons.imports import tf
@@ -41,6 +42,15 @@ class IOType:
 
     def output_size(self):
         return product(self.output_shape)
+
+
+@dataclass(frozen=True)
+class SimpleTrainingSpec:
+    validation_holdout_fraction: float
+    epoch_count: int
+    batch_size: int
+    model_maker: Callable[[IOType], tf.keras.Model]
+    optimizer: Optimizer
 
 
 @dataclass(frozen=True)

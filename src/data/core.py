@@ -8,18 +8,6 @@ from src.split.binarysplit import UnitSplit
 from src.split.splitconversion import to_int_split
 from src.type.core import SizedDataset, WholeDatasetSize
 
-FRACTION_SET_ASIDE_FOR_VALIDATION = 1 / 4
-BATCH_SIZE = 4
-
-
-def dataset_from_numpy(examples: Tuple[ndarray, ndarray]) -> Tuple[SizedDataset, SizedDataset]:
-    train_set, validation_set = split_dataset(
-        UnitSplit.from_second(FRACTION_SET_ASIDE_FOR_VALIDATION),
-        from_numpy(examples)
-    )
-
-    return ready_for_training(train_set, BATCH_SIZE), ready_for_evaluation(validation_set, BATCH_SIZE)
-
 
 def from_numpy(numpy_dataset: Tuple[ndarray, ndarray]) -> SizedDataset:
     return SizedDataset(
