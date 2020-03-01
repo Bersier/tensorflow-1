@@ -2,8 +2,8 @@ from tensorflow.keras import initializers
 from tensorflow.keras import layers
 
 from src.commons.imports import tf
+from src.model.layer.core import dense_relu_layer
 from src.model.layer.doubledense import DoubleDense
-from src.model.utils import dense_relu_layer
 from src.type.core import IOType
 
 
