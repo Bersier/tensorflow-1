@@ -1,12 +1,12 @@
 from typing import Mapping, Tuple, List
 
 from src.commons.imports import tf
-from src.commons.python.core import fill
+from src.commons.python.core import filled
 from src.commons.tensorflow.typealias import TENSOR_PAIR
 
 
 def slice_along(x: tf.Tensor, ranges: Mapping[int, Tuple[int, int]]) -> tf.Tensor:
-    begin = fill(len(x.shape), 0)
+    begin = filled(len(x.shape), 0)
     size = list(x.shape)
     for axis, _range in ranges:
         begin[axis] = _range[0]

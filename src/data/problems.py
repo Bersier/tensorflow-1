@@ -1,7 +1,7 @@
 from dataclasses import replace
 
 from src.commons.imports import AUTOTUNE, tf
-from src.commons.python.core import on_first
+from src.commons.python.core import pair_1_lifted
 from src.commons.tensorflow.extention import with_noise
 from src.commons.tensorflow.maker import NAN
 from src.data.core import from_numpy, normalized
@@ -27,7 +27,7 @@ def random(spec: DatasetSpec) -> LearningProblem:
 
 def with_nans(problem: LearningProblem, nan_proportion: float = 0.5) -> LearningProblem:
     dtype = tf.dtypes.float64  # TODO
-    mapping = on_first(with_noise(tf.cast(NAN, dtype), nan_proportion))
+    mapping = pair_1_lifted(with_noise(tf.cast(NAN, dtype), nan_proportion))
     return replace(
         problem,
         dataset=replace(

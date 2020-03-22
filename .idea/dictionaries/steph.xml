@@ -11,6 +11,7 @@
       <w>crossentropy</w>
       <w>dataset</w>
       <w>dtype</w>
+      <w>injective</w>
       <w>keras</w>
       <w>matplotlib</w>
       <w>max</w>
@@ -19,6 +20,7 @@
       <w>mins</w>
       <w>multiplicatively</w>
       <w>numeric</w>
+      <w>numerics</w>
       <w>pyplot</w>
       <w>relu</w>
       <w>stuctural</w>

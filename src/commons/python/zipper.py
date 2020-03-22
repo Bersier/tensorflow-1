@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from inspect import ismethod
-from typing import Generic, TypeVar, Mapping, Any, cast
+from typing import Generic, TypeVar, Mapping, Any, cast, Type
 
 from src.commons.python.core import new_instance
 from src.commons.python.list import List, Cons
@@ -11,8 +11,8 @@ T = TypeVar('T', covariant=True)
 
 
 @dataclass(frozen=True)
-class Node:
-    of_type: type
+class Node(Generic[T]):
+    of_type: Type[T]
     attribute_name: str
     other_fields: Mapping[str, Any]
 
