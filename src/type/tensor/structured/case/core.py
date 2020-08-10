@@ -3,7 +3,8 @@ from __future__ import annotations
 import abc
 from typing import Generic, Optional, TypeVar, Any
 
-from src.commons.imports import tf
+import tensorflow as tf
+
 from src.commons.python.core import todo
 from src.commons.python.list import List
 from src.commons.python.zipper import Zipper

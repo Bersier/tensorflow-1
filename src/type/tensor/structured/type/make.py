@@ -2,10 +2,8 @@ from typing import Tuple
 
 from src.commons.imports import tf
 from src.commons.python.name import Name
-from src.type.tensor.structured.type import numeric, boolean, core
-from src.type.tensor.structured.type.boolean import Boolean
 from src.type.tensor.structured.type.core import Primitive, T1, T2
-from src.type.tensor.structured.type.numeric import Numeric
+from src.type.tensor.structured.type.utils import Numeric
 
 NUMERIC_DTYPES = {
     tf.dtypes.float16,
