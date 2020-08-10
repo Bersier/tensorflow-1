@@ -11,11 +11,3 @@ def option(of: Type) -> Type:
 # noinspection PyArgumentList
 def scalar(of: tf.dtypes.DType) -> Type:
     return make.primitive(of)
-
-
-def vector(of_type: Type, length: int) -> Type:
-    return of_type.tensor(shape=[length]).tagged(tag=name.Static.Vector)
-
-
-def matrix(of_type: Type, row_count: int, column_count: int) -> Type:
-    return of_type.tensor(shape=[row_count, column_count]).tagged(tag=name.Static.Matrix)
