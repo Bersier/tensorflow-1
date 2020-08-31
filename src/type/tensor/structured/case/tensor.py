@@ -10,6 +10,9 @@ from src.type.tensor.structured.type.core import Tensor
 class View(core.View[Tensor]):
 
     def __getitem__(self, *args):
+        """
+        Creates a View of a new structure
+        """
         axes_to_squeeze = []
         ranges = {}
         i = self._start_axis
@@ -34,6 +37,9 @@ class View(core.View[Tensor]):
         return View(tensor, self._start_axis, mask, view_type)
 
     def element_view(self):
+        """
+        Changes the focus without changing the structure
+        """
         return new_view(
             tensor=self._tensor,
             start_axis=self._start_axis + len(self._view_type.focus.shape),
