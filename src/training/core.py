@@ -1,4 +1,4 @@
-import tensorflow_addons as tfa
+from tensorflow.keras import optimizers
 
 from src.commons.imports import tf
 from src.data.core import ready_for_training, ready_for_evaluation, split_dataset
@@ -48,7 +48,7 @@ def fit(model: tf.keras.Model, dataset: SizedDataset, validation_dataset: SizedD
 
 
 def adam_optimizer(learning_rate=1e-3, weight_decay=1e-6, beta_1=0.9):
-    return tfa.optimizers.AdamW(
+    return optimizers.AdamW(
         amsgrad=True,
         learning_rate=learning_rate,
         weight_decay=weight_decay,

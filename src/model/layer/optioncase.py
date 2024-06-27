@@ -18,7 +18,7 @@ class OptionCase(tf.keras.layers.Layer):
       - A nested vector can be present (Some), or absent (None).
       - The presence of a vector is represented by absence of nans:
         - If none of the features of a nested vector are nan, then that vector is present.
-        - If any of the the features of a nested vector are nan, then that vector is absent.
+        - If any of the features of a nested vector are nan, then that vector is absent.
 
     """
 

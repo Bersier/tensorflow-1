@@ -4,7 +4,6 @@ from typing import Union, Callable, List, Sequence, Generic, TypeVar
 from tensorflow.keras import losses
 from tensorflow.keras.losses import Loss
 from tensorflow.keras.optimizers import Optimizer
-from tensorflow_core import Tensor
 
 from src.commons.imports import tf
 from src.commons.python.core import product
@@ -56,8 +55,8 @@ class SimpleTrainingSpec:
 @dataclass(frozen=True)
 class LearningProblem:
     dataset: SizedDataset
-    loss_function: Union[Loss, Callable[[Tensor, Tensor], Tensor]]
-    metrics: List[Callable[[Tensor, Tensor], Tensor]]
+    loss_function: Union[Loss, Callable[[tf.Tensor, tf.Tensor], tf.Tensor]]
+    metrics: List[Callable[[tf.Tensor, tf.Tensor], tf.Tensor]]
     io_type: IOType
 
     def data(self) -> tf.data.Dataset:
