@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from inspect import ismethod
-from typing import Generic, TypeVar, Mapping, Any, cast, Type
+from typing import Generic, TypeVar, Mapping, Any, cast
 
 from src.commons.python.core import new_instance
 from src.commons.python.list import List, Cons
@@ -12,9 +12,10 @@ T = TypeVar('T', covariant=True)
 
 @dataclass(frozen=True)
 class Node(Generic[T]):
-    of_type: Type[T]
+    of_type: type[T]
     attribute_name: str
     other_fields: Mapping[str, Any]
+    # todo why isn't the original object saved here instead?
 
 
 @dataclass(frozen=True)
@@ -38,7 +39,11 @@ class Zipper(Generic[T]):
     def at(self, name: str) -> Zipper:
         fields = dict(vars(self.focus))
         del fields[name]
-        node = Node(type(self.focus), name, fields)
+        node = Node(
+            of_type=type(self.focus),
+            attribute_name=name,
+            other_fields=fields,
+        )
         return Zipper(
             path=Cons(node, self.path),
             focus=getattr(self.focus, name)

@@ -1,7 +1,7 @@
 import pickle
 from functools import reduce
 from operator import mul
-from typing import Iterable, Tuple, TypeVar, Dict, Mapping, Union, List, Callable, Any, Sequence, Type
+from typing import Iterable, Tuple, TypeVar, Dict, Mapping, Union, List, Callable, Any, Sequence
 
 S = TypeVar('S')
 T = TypeVar('T')
@@ -90,7 +90,7 @@ def unpickle_file(filename: str) -> Any:
         return pickle.load(file)
 
 
-def new_instance(of: Type[T], with_fields: Mapping[str, Any]) -> T:
+def new_instance(of: type[T], with_fields: Mapping[str, Any]) -> T:
     """Warning! Unsafe."""
     # noinspection PyArgumentList
     obj = of.__new__(of)

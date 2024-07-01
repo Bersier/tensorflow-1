@@ -10,7 +10,8 @@ from src.type.tensor.structured.type.utils import N
 class View(core.View[N, IS_ROOT]):
 
     # noinspection PyProtectedMember
-    def __add__(self, other: View[N, Root.Yes]):  # TODO Root.Yes might have to be a subclass for typing to work
+    def __add__(self, other: View[N, Root.Yes]):
+        # TODO Root.Yes might have to be a subclass for typing to work
         assert self.type() == other.type()
         sum_tensor = self._tensor + other._tensor
         if self._mask:

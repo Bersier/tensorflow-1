@@ -23,8 +23,8 @@ class View(abc.ABC, Generic[T, IS_ROOT]):
         assert is_valid_type(tensor, start_axis, view_type.focus)
         self._tensor = tensor
         self._start_axis = start_axis
-        self._view_type = view_type
         self._mask = mask
+        self._view_type = view_type
 
     @classmethod
     def _root(cls, t: tf.Tensor, of_type: Type) -> View[Any, Root.Yes]:

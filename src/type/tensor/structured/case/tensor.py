@@ -17,10 +17,10 @@ class View(core.View[Tensor]):
         ranges = {}
         i = self._start_axis
         for arg in args:
-            if type(arg) == int:
+            if type(arg) is int:
                 axes_to_squeeze.append(i)
                 ranges[i] = (arg, arg + 1)
-            elif type(arg) == slice:
+            elif type(arg) is slice:
                 assert arg.step == 1
                 ranges[i] = (arg.start, arg.stop)
             else:

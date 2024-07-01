@@ -22,7 +22,7 @@ class NamedPair(Generic[T1, T2]):
         object.__setattr__(self, 'second', second_or_first)
 
     def __getitem__(self, arg):
-        if type(arg) == Name:
+        if type(arg) is Name:
             name = cast(Name, arg)
             if name == self._first[0]:
                 return self._first[1]
